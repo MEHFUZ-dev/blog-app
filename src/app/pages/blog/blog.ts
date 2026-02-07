@@ -51,6 +51,10 @@ export class BlogComponent implements OnInit, OnDestroy {
   private articlesSubscription: Subscription | null = null;
   showMenu = false;
 
+  // Detail modal for viewing full blog
+  showDetailModal: boolean = false;
+  selectedProject: Project | null = null;
+
   constructor(
     private auth: AuthService,
     private router: Router,
@@ -155,5 +159,16 @@ export class BlogComponent implements OnInit, OnDestroy {
     if (projectSection) {
       projectSection.scrollIntoView({ behavior: 'smooth' });
     }
+  }
+
+  viewBlogDetail(project: Project) {
+    console.log('Opening blog detail:', project);
+    this.selectedProject = project;
+    this.showDetailModal = true;
+  }
+
+  closeDetailModal() {
+    this.showDetailModal = false;
+    this.selectedProject = null;
   }
 }

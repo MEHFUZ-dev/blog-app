@@ -133,10 +133,10 @@
 
           <div class="flex justify-between items-center pt-2 flex-col sm:flex-row gap-2">
             <button
-              [routerLink]="['/blog', project.id]"
-              class="text-purple-600 font-semibold hover:underline text-sm md:text-base"
+              (click)="viewBlogDetail(project)"
+              class="text-purple-600 font-semibold hover:underline text-sm md:text-base px-3 py-1 bg-purple-100 rounded-lg hover:bg-purple-200 transition"
             >
-              Read More →
+              👁️ View
             </button>
 
             <span class="text-xs text-gray-400">Article</span>
@@ -149,5 +149,45 @@
     </div>
 
   </section>
+
+  <!-- DETAIL MODAL - Full Blog Content -->
+  <div *ngIf="showDetailModal && selectedProject"
+       class="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 top-0 left-0 right-0 bottom-0">
+
+    <div class="bg-white rounded-xl w-full max-w-2xl max-h-[90vh] flex flex-col shadow-2xl">
+
+      <!-- Header -->
+      <div class="flex justify-between items-start p-6 border-b bg-gray-50">
+        <h2 class="text-2xl font-bold pr-4">{{ selectedProject.title }}</h2>
+        <button (click)="closeDetailModal()" 
+                class="text-gray-500 hover:text-gray-700 text-3xl font-light flex-shrink-0">
+          ×
+        </button>
+      </div>
+
+      <!-- Content -->
+      <div class="flex-1 overflow-y-auto p-6">
+        
+        <!-- Image -->
+        <img [src]="selectedProject.image" 
+             class="w-full h-80 object-cover rounded-lg mb-6">
+
+        <!-- Full Content -->
+        <div class="text-gray-700 whitespace-pre-wrap leading-relaxed text-base">
+          {{ selectedProject.tech }}
+        </div>
+
+      </div>
+
+      <!-- Footer -->
+      <div class="flex gap-3 p-6 border-t bg-gray-50">
+        <button (click)="closeDetailModal()" 
+                class="flex-1 bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 font-medium">
+          Close
+        </button>
+      </div>
+
+    </div>
+  </div>
 
 </div>
