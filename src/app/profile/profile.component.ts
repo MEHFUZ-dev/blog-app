@@ -23,6 +23,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
   isLoggedIn: boolean = false;
   showModal: boolean = false;
 
+  // Detail modal for reading full blog
+  showDetailModal: boolean = false;
+  selectedProject: Project | null = null;
+
   constructor(
     private router: Router,
     private auth: AuthService,
@@ -167,6 +171,16 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.auth.logout();
     this.isLoggedService.logout();
     this.router.navigate(['/login']);
+  }
+
+  viewBlogDetail(project: Project) {
+    this.selectedProject = project;
+    this.showDetailModal = true;
+  }
+
+  closeDetailModal() {
+    this.showDetailModal = false;
+    this.selectedProject = null;
   }
 
   showMenu = false;

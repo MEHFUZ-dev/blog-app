@@ -12,15 +12,40 @@
 
   <!-- Desktop Menu (hidden under 768px) -->
   <ul class="hidden md:flex gap-8 font-medium items-center">
-    <li><a (click)="activePage='Home'" class="px-3 py-2 rounded-lg hover:bg-gray-100">🏠 Home</a></li>
-    <li><a routerLink="/blogs" class="px-3 py-2 rounded-lg hover:bg-gray-100">📝 Blogs</a></li>
-    <li><a (click)="activePage='Services'" class="px-3 py-2 rounded-lg hover:bg-gray-100">🛠️ Services</a></li>
-    <li><a (click)="activePage='About'" class="px-3 py-2 rounded-lg hover:bg-gray-100">ℹ️ About</a></li>
-    <li>
-      <button (click)="toggleMenu()" class="px-3 py-2 rounded-lg hover:bg-gray-100">
-        📞 Contact
-      </button>
-    </li>
+    <li><a (click)="activePage='Home'" class="px-3 py-2 rounded-lg hover:bg-gray-100 hover:cursor-pointer">🏠 Home</a></li>
+    <li><a routerLink="/blogs" class="px-3 py-2 rounded-lg hover:bg-gray-100 hover:cursor-pointer">📝 Blogs</a></li>
+    <li><a (click)="activePage='Services'" class="px-3 py-2 rounded-lg hover:bg-gray-100 hover:cursor-pointer">🛠️ Services</a></li>
+    <li><a (click)="activePage='About'" class="px-3 py-2 rounded-lg hover:bg-gray-100 hover:cursor-pointer">ℹ️ About</a></li>
+    <li class="relative">
+  <button
+    (click)="toggleMenu()"
+    class="px-3 py-2 rounded-lg hover:bg-gray-100"
+  >
+    📞 Contact
+  </button>
+
+  <!-- Dropdown -->
+  <div
+    *ngIf="showMenu"
+    class="absolute mt-2 w-40 bg-white shadow-lg rounded-lg border"
+  >
+    <a
+      href="https://wa.me/8087881607"
+      target="_blank"
+      class="block px-4 py-2 hover:bg-gray-100"
+    >
+      WhatsApp
+    </a>
+
+    <a
+      href="tel:+918087881607"
+      class="block px-4 py-2 hover:bg-gray-100"
+    >
+      Call
+    </a>
+  </div>
+</li>
+
   </ul>
 
   <!-- Right Section -->
