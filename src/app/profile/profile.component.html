@@ -23,8 +23,7 @@
   <div class="max-w-5xl mx-auto p-4 md:p-6 space-y-4">
 
     <div *ngFor="let project of projects"
-         (click)="viewBlogDetail(project)"
-         class="bg-white rounded-xl shadow-sm flex flex-col sm:flex-row overflow-hidden cursor-pointer hover:shadow-md transition-shadow">
+         class="bg-white rounded-xl shadow-sm flex flex-col sm:flex-row overflow-hidden hover:shadow-md transition-shadow">
 
       <img [src]="project.image" class="w-full sm:w-40 h-48 sm:h-28 object-cover">
 
@@ -36,9 +35,10 @@
         <p class="text-xs text-indigo-600 mt-2 font-medium">Read More →</p>
       </div>
 
-      <div class="flex items-center gap-2 p-4" (click)="$event.stopPropagation()">
-        <button (click)="startEdit(project)" title="Edit">✏️</button>
-        <button (click)="deleteProject(project._id!)" title="Delete">🗑</button>
+      <div class="flex items-center gap-2 p-4 flex-wrap">
+        <button (click)="viewBlogDetail(project)" title="View" class="px-3 py-2 bg-indigo-600 text-white rounded text-sm hover:bg-indigo-700">👁️ View</button>
+        <button (click)="startEdit(project)" title="Edit" class="px-3 py-2 bg-yellow-500 text-white rounded text-sm hover:bg-yellow-600">✏️ Edit</button>
+        <button (click)="deleteProject(project._id!)" title="Delete" class="px-3 py-2 bg-red-500 text-white rounded text-sm hover:bg-red-600">🗑 Delete</button>
       </div>
 
     </div>
