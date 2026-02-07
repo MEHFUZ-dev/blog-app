@@ -174,8 +174,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   viewBlogDetail(project: Project) {
+    console.log('Opening blog detail:', project);
     this.selectedProject = project;
     this.showDetailModal = true;
+    console.log('showDetailModal:', this.showDetailModal, 'selectedProject:', this.selectedProject);
   }
 
   closeDetailModal() {
