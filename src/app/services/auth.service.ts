@@ -16,19 +16,6 @@ export interface AuthResponse {
   token: string;
 }
 
-export interface OtpResponse {
-  message: string;
-  userId: string;
-  email: string;
-  requiresOtp: boolean;
-}
-
-export interface OtpVerifyResponse {
-  message: string;
-  user: AuthUser;
-  token: string;
-}
-
 @Injectable({
   providedIn: 'root'
 })
@@ -49,23 +36,15 @@ export class AuthService {
     this.isLoggedService.loginSuccess(username);
   }
 
-  loginApi(email: string, password: string): Observable<OtpResponse> {
-    return this.http.post<OtpResponse>(`${API_BASE_URL}/auth/login`, { email, password });
-  }
-
-  verifyOtp(userId: string, otp: string, type: 'login' | 'register' = 'login'): Observable<OtpVerifyResponse> {
+  loginApi(email: string, password: string): Observable<AuthResponse> {
     return this.http
-      .post<OtpVerifyResponse>(`${API_BASE_URL}/auth/verify-otp`, { userId, otp, type })
+      .post<AuthResponse>(`${API_BASE_URL}/auth/login`, { email, password })
       .pipe(
         tap((res) => {
           localStorage.setItem('authToken', res.token);
           this.login(res.user.name);
-        })
+        }),
       );
-  }
-
-  resendOtp(userId: string): Observable<OtpResponse> {
-    return this.http.post<OtpResponse>(`${API_BASE_URL}/auth/resend-otp`, { userId });
   }
 
   logout() {
@@ -86,8 +65,15 @@ export class AuthService {
     return this.currentUser !== null;
   }
 
-  registerApi(name: string, email: string, password: string): Observable<OtpResponse> {
-    return this.http.post<OtpResponse>(`${API_BASE_URL}/auth/register`, { name, email, password });
+  registerApi(name: string, email: string, password: string): Observable<AuthResponse> {
+    return this.http
+      .post<AuthResponse>(`${API_BASE_URL}/auth/register`, { name, email, password })
+      .pipe(
+        tap((res) => {
+          localStorage.setItem('authToken', res.token);
+          this.login(res.user.name);
+        }),
+      );
   }
 
   me(): Observable<AuthUser> {
