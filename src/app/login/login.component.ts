@@ -15,7 +15,15 @@ import { PORTFOLIO_DATA } from '../data/portfolio-data';
 export class LoginComponent {
   email: string = '';
   password: string = '';
+  otp: string = '';
   errorMessage: string = '';
+  successMessage: string = '';
+  
+  // OTP flow state
+  showOtpScreen: boolean = false;
+  userId: string = '';
+  otpEmail: string = '';
+  resendTimer: number = 0;
 
   constructor(
     private auth: AuthService,
@@ -25,6 +33,7 @@ export class LoginComponent {
 
   login() {
     this.errorMessage = '';
+    this.successMessage = '';
     
     if (!this.email.trim() || !this.password.trim()) {
       this.errorMessage = 'Please enter email and password';
@@ -33,12 +42,73 @@ export class LoginComponent {
 
     const email = this.email.toLowerCase().trim();
     this.auth.loginApi(email, this.password).subscribe({
-      next: () => {
-        this.router.navigate(['/home']);
+      next: (res) => {
+        this.userId = res.userId;
+        this.otpEmail = res.email;
+        this.successMessage = 'OTP sent to your email!';
+        this.showOtpScreen = true;
+        this.email = '';
+        this.password = '';
+        this.startResendTimer();
       },
       error: (err) => {
         this.errorMessage = err?.error?.message || 'Invalid credentials';
       },
     });
   }
+
+  verifyOtp() {
+    this.errorMessage = '';
+    this.successMessage = '';
+
+    if (!this.otp.trim() || this.otp.length !== 6) {
+      this.errorMessage = 'Please enter a valid 6-digit OTP';
+      return;
+    }
+
+    this.auth.verifyOtp(this.userId, this.otp, 'login').subscribe({
+      next: () => {
+        this.successMessage = 'Login successful!';
+        setTimeout(() => {
+          this.router.navigate(['/home']);
+        }, 1000);
+      },
+      error: (err) => {
+        this.errorMessage = err?.error?.message || 'Invalid OTP';
+      },
+    });
+  }
+
+  resendOtp() {
+    this.errorMessage = '';
+    this.successMessage = '';
+    
+    this.auth.resendOtp(this.userId).subscribe({
+      next: (res) => {
+        this.successMessage = res.message || 'OTP resent to your email!';
+        this.startResendTimer();
+      },
+      error: (err) => {
+        this.errorMessage = err?.error?.message || 'Failed to resend OTP';
+      },
+    });
+  }
+
+  startResendTimer() {
+    this.resendTimer = 60;
+    const interval = setInterval(() => {
+      this.resendTimer--;
+      if (this.resendTimer <= 0) {
+        clearInterval(interval);
+      }
+    }, 1000);
+  }
+
+  goBack() {
+    this.showOtpScreen = false;
+    this.otp = '';
+    this.errorMessage = '';
+    this.successMessage = '';
+  }
 }
+
