@@ -68,7 +68,12 @@
       </textarea>
 
       <label class="block text-sm font-medium text-gray-700 mb-2">Upload Image</label>
-      <input type="file" (change)="onFileSelected($event)" class="mb-4 text-sm border rounded p-2 w-full"/>
+      <div class="flex gap-3 items-start">
+        <input type="file" (change)="onFileSelected($event)" class="mb-4 text-sm border rounded p-2 flex-1"/>
+        <img *ngIf="editProject.image" 
+             [src]="editProject.image" 
+             class="w-20 h-20 object-cover rounded-lg border mt-0">
+      </div>
 
       <div class="flex flex-col sm:flex-row gap-3">
         <button (click)="saveEdit()" class="bg-purple-600 text-white px-4 py-2 rounded text-sm md:text-base flex-1">
