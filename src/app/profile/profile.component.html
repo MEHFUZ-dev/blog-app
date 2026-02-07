@@ -7,13 +7,13 @@
     <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
       <button
         (click)="openNewProjectModal()"
-        class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 text-sm md:text-base">
+        class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 text-sm md:text-base hover:cursor-pointer w-full sm:w-auto">
         + New Blog
       </button>
 
       <button
         (click)="logout()"
-        class="bg-red-500 text-white px-3 md:px-4 py-2 rounded-lg text-sm md:text-base">
+        class="bg-red-500 text-white px-3 md:px-4 py-2 rounded-lg text-sm md:text-base hover:cursor-pointer w-full sm:w-auto">
         Logout
       </button>
     </div>
@@ -32,13 +32,13 @@
         <p class="text-sm text-gray-500 line-clamp-3">
           {{ project.tech }}
         </p>
-        <p class="text-xs text-indigo-600 mt-2 font-medium">Read More →</p>
+        <p (click)="viewBlogDetail(project)" class="text-xs text-indigo-600 mt-2 font-medium hover:cursor-pointer">Read More →</p>
       </div>
 
       <div class="flex items-center gap-2 p-4 flex-wrap">
-        <button (click)="viewBlogDetail(project)" title="View" class="px-3 py-2 bg-indigo-600 text-white rounded text-sm hover:bg-indigo-700">👁️ View</button>
-        <button (click)="startEdit(project)" title="Edit" class="px-3 py-2 bg-yellow-500 text-white rounded text-sm hover:bg-yellow-600">✏️ Edit</button>
-        <button (click)="deleteProject(project._id!)" title="Delete" class="px-3 py-2 bg-red-500 text-white rounded text-sm hover:bg-red-600">🗑 Delete</button>
+        <button (click)="viewBlogDetail(project)" title="View" class="px-3 py-2 bg-indigo-600 text-white rounded text-sm hover:bg-indigo-700 hover:cursor-pointer">👁️ View</button>
+        <button (click)="startEdit(project)" title="Edit" class="px-3 py-2 bg-yellow-500 text-white rounded text-sm hover:bg-yellow-600 hover:cursor-pointer">✏️ Edit</button>
+        <button (click)="deleteProject(project._id!)" title="Delete" class="px-3 py-2 bg-red-500 text-white rounded text-sm hover:bg-red-600 hover:cursor-pointer">🗑 Delete</button>
       </div>
 
     </div>
@@ -72,7 +72,7 @@
         <input type="file" (change)="onFileSelected($event)" class="mb-4 text-sm border rounded p-2 flex-1"/>
         <img *ngIf="editProject.image" 
              [src]="editProject.image" 
-             class="w-20 h-20 object-cover rounded-lg border mt-0">
+             class="w-15 h-15 object-cover rounded-lg border mb-2">
       </div>
 
       <div class="flex flex-col sm:flex-row gap-3">
