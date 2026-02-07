@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /admin
 Disallow: /profile
-Sitemap: https://yourdomain.com/sitemap.xml
+Sitemap: https://simran-computer.vercel.app/sitemap.xml
