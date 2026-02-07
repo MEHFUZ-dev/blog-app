@@ -5,10 +5,10 @@
 
     <!-- MAIN CARD -->
     <div class="border-2 border-white rounded-3xl overflow-hidden
-                flex shadow-2xl w-[900px]">
+                flex flex-col md:flex-row shadow-2xl w-full max-w-[900px]">
 
       <!-- LEFT IMAGE / INFO PANEL (same as login, can reuse) -->
-      <div class="container2 flex-1 p-6 text-white
+      <div class="container2 w-full md:w-1/2 p-6 md:p-8 text-white
                   flex flex-col justify-between bg-transparent">
 
         <div class="flex justify-between items-center">
@@ -34,35 +34,35 @@
       </div>
 
       <!-- RIGHT REGISTER PANEL -->
-      <div class="bg-white flex-1 p-8 shadow-lg">
+      <div class="bg-white w-full md:w-1/2 p-6 md:p-8 shadow-lg">
 
         <!-- HEADER -->
-        <h2 class="text-2xl font-bold text-center text-gray-800">
+        <h2 class="text-xl md:text-2xl font-bold text-center text-gray-800">
           Register
         </h2>
-        <p class="text-sm text-center text-gray-500 mt-1">
+        <p class="text-xs md:text-sm text-center text-gray-500 mt-1">
           Join Winged today
         </p>
 
         <!-- ERROR -->
         <div *ngIf="errorMessage"
              class="mt-4 p-3 bg-red-100 border border-red-400
-                    text-red-700 rounded">
+                    text-red-700 rounded text-sm">
           {{ errorMessage }}
         </div>
 
         <!-- SUCCESS -->
         <div *ngIf="successMessage"
              class="mt-4 p-3 bg-green-100 border border-green-400
-                    text-green-700 rounded">
+                    text-green-700 rounded text-sm">
           {{ successMessage }}
         </div>
 
         <!-- FORM -->
-        <form (ngSubmit)="register()" class="space-y-4 mt-4">
+        <form (ngSubmit)="register()" class="space-y-3 md:space-y-4 mt-4">
 
           <div>
-            <label class="block text-sm font-medium text-gray-600 mb-1">
+            <label class="block text-xs md:text-sm font-medium text-gray-600 mb-1">
               Name
             </label>
             <input
@@ -70,12 +70,12 @@
               [(ngModel)]="formData.name"
               name="name"
               required
-              class="w-full px-4 py-2 border rounded-lg
+              class="w-full px-3 md:px-4 py-2 text-sm border rounded-lg
                      focus:ring-2 focus:ring-green-500" />
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-600 mb-1">
+            <label class="block text-xs md:text-sm font-medium text-gray-600 mb-1">
               Email
             </label>
             <input
@@ -83,12 +83,12 @@
               [(ngModel)]="formData.email"
               name="email"
               required
-              class="w-full px-4 py-2 border rounded-lg
+              class="w-full px-3 md:px-4 py-2 text-sm border rounded-lg
                      focus:ring-2 focus:ring-green-500" />
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-600 mb-1">
+            <label class="block text-xs md:text-sm font-medium text-gray-600 mb-1">
               Password
             </label>
             <input
@@ -96,14 +96,14 @@
               [(ngModel)]="formData.password"
               name="password"
               required
-              class="w-full px-4 py-2 border rounded-lg
+              class="w-full px-3 md:px-4 py-2 text-sm border rounded-lg
                      focus:ring-2 focus:ring-green-500" />
           </div>
 
           <button
             type="submit"
             [disabled]="!formData.name || !formData.email || !formData.password"
-            class="w-full py-2 rounded-lg text-white font-semibold
+            class="w-full py-2 px-4 rounded-lg text-white text-sm md:text-base font-semibold
                    bg-green-600 hover:bg-green-700
                    disabled:bg-gray-400 transition">
             Register
@@ -111,7 +111,7 @@
         </form>
 
         <!-- FOOTER -->
-        <p class="text-center text-gray-600 mt-4">
+        <p class="text-center text-gray-600 mt-4 text-xs md:text-sm">
           Already have an account?
           <button (click)="goToLogin()"
                   class="text-green-600 font-semibold hover:underline">

@@ -1,138 +1,119 @@
 <!-- Navbar -->
 <nav
-  class="fixed top-0 left-0 w-full flex justify-between items-center px-10 py-4 z-50 
+  class="fixed top-0 left-0 w-full flex justify-between items-center px-4 md:px-8 lg:px-10 py-4 z-50 
   bg-white/80 backdrop-blur-md shadow-lg"
 >
   <!-- Logo -->
-  <div class="text-2xl font-bold text-gray-900">
-    <span class="pl-4">Simran</span>
-    <span> Computer</span>
+  <div class="text-lg md:text-xl lg:text-2xl font-bold text-gray-900">
+    <span class="hidden sm:inline">Simran</span>
+    <span class="sm:hidden">SC</span>
+    <span class="hidden sm:inline"> Computer</span>
   </div>
 
-  <!-- Menu -->
+  <!-- Desktop Menu (hidden under 768px) -->
   <ul class="hidden md:flex gap-8 font-medium items-center">
-    <!-- Home -->
+    <li><a (click)="activePage='Home'" class="px-3 py-2 rounded-lg hover:bg-gray-100">🏠 Home</a></li>
+    <li><a routerLink="/blogs" class="px-3 py-2 rounded-lg hover:bg-gray-100">📝 Blogs</a></li>
+    <li><a (click)="activePage='Services'" class="px-3 py-2 rounded-lg hover:bg-gray-100">🛠️ Services</a></li>
+    <li><a (click)="activePage='About'" class="px-3 py-2 rounded-lg hover:bg-gray-100">ℹ️ About</a></li>
     <li>
-      <a
-        (click)="activePage='Home'"
-        [ngClass]="activePage==='Home'
-          ? 'bg-blue-600 text-white'
-          : 'text-gray-800 hover:bg-gray-100'"
-        class="flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer transition"
-      >
-        🏠 <span>Home</span>
-      </a>
-    </li>
-
-    <!-- Blogs -->
-    <li>
-      <a
-        routerLink="/blogs"
-        class="text-gray-800 hover:bg-gray-100 flex items-center gap-2 px-3 py-2 rounded-lg transition"
-      >
-        📝 <span>Blogs</span>
-      </a>
-    </li>
-
-    <!-- Services -->
-    <li>
-      <a
-        (click)="activePage='Services'"
-        [ngClass]="activePage==='Services'
-          ? 'bg-blue-600 text-white'
-          : 'text-gray-800 hover:bg-gray-100'"
-        class="flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer transition"
-      >
-        🛠️ <span>Services</span>
-      </a>
-    </li>
-
-    <!-- About -->
-    <li>
-      <a
-        (click)="activePage='About'"
-        [ngClass]="activePage==='About'
-          ? 'bg-blue-600 text-white'
-          : 'text-gray-800 hover:bg-gray-100'"
-        class="flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer transition"
-      >
-        ℹ️ <span>About</span>
-      </a>
-    </li>
-
-    <!-- Contact -->
-    <li class="relative">
-      <button
-        (click)="toggleMenu()"
-        class="text-gray-800 px-3 py-2 rounded-lg hover:bg-gray-100 transition cursor-pointer flex items-center gap-2"
-      >
+      <button (click)="toggleMenu()" class="px-3 py-2 rounded-lg hover:bg-gray-100">
         📞 Contact
       </button>
-
-      @if (showMenu) {
-        <div
-          class="absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-lg p-2 flex flex-col gap-2 z-50"
-        >
-          <a
-            href="tel:+918087881607"
-            class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition text-center"
-          >
-            Call Now
-          </a>
-
-          <a
-            href="https://wa.me/918087881607"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-700 transition text-center"
-          >
-            WhatsApp
-          </a>
-        </div>
-      }
     </li>
   </ul>
 
-  <!-- Right Buttons -->
-  <div class="flex gap-4">
+  <!-- Right Section -->
+  <div class="flex items-center gap-2 md:gap-4">
+
     <button
-    routerLink="/login" 
+      routerLink="/login"
       *ngIf="!isAuthenticated"
-      (click)="signIn()"
-      class="bg-blue-600 text-white px-5 py-2 rounded-full cursor-pointer font-medium hover:bg-blue-700 transition"
+      class="bg-blue-600 text-white px-3 md:px-5 py-2 text-sm md:text-base rounded-full font-medium"
     >
       Sign In
     </button>
 
-    <!-- <button
-      *ngIf="isAuthenticated && userType === 'admin'"
-      (click)="goToAdmin()"
-      class="bg-green-600 text-white px-5 py-2 rounded-full cursor-pointer font-medium hover:bg-green-700 transition"
-    >
-      Admin Panel
-    </button> -->
+    <!-- Hamburger (shows only under 768px) -->
+    <button
+  class="md:hidden flex flex-col gap-1"
+  (click)="toggleMobileMenu()"
+>
+
+      <span class="w-6 h-0.5 bg-gray-900"></span>
+      <span class="w-6 h-0.5 bg-gray-900"></span>
+      <span class="w-6 h-0.5 bg-gray-900"></span>
+    </button>
+
   </div>
 </nav>
 
+<!-- Mobile Menu -->
+<div *ngIf="mobileMenuOpen" class="md:hidden bg-white border-t shadow-lg">
+  <ul class="flex flex-col px-4 py-4 gap-3 font-medium mt-14">
+
+    <li>
+      <a (click)="activePage='Home'; mobileMenuOpen=false" class="block">
+        🏠 Home
+      </a>
+    </li>
+
+    <li>
+      <a routerLink="/blogs" (click)="mobileMenuOpen=false" class="block">
+        📝 Blogs
+      </a>
+    </li>
+
+    <li>
+      <a (click)="activePage='Services'; mobileMenuOpen=false" class="block">
+        🛠️ Services
+      </a>
+    </li>
+
+    <li>
+      <a (click)="activePage='About'; mobileMenuOpen=false" class="block">
+        ℹ️ About
+      </a>
+    </li>
+
+    <li>
+      <a href="tel:+918087881607"
+         class="block bg-blue-600 text-white px-3 py-2 rounded-lg text-center">
+        Call
+      </a>
+    </li>
+
+    <li>
+      <a href="https://wa.me/918087881607"
+         class="block bg-green-600 text-white px-3 py-2 rounded-lg text-center">
+        WhatsApp
+      </a>
+    </li>
+
+  </ul>
+</div>
+
+
+
 <!-- Hero Section -->
 <section
-  class="min-h-screen flex flex-col items-center justify-center text-center bg-gray-50 pt-24"
+  class="min-h-screen flex flex-col items-center justify-center text-center bg-gray-50 px-4"
   *ngIf="activePage === 'Home'"
 >
-  <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight">
+  <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight px-2">
     Your Hub for <br />
     <span class="text-blue-600">Computer Knowledge</span> <br />
     & Tech Blogs
   </h1>
 
-  <p class="mt-6 max-w-2xl text-gray-600 text-lg">
+  <p class="mt-4 md:mt-6 max-w-2xl text-gray-600 text-sm md:text-base lg:text-lg px-4">
     A reliable platform to explore computer information, latest technology updates, and easy-to-understand blogs.
   </p>
 
-  <div class="mt-8 flex gap-4">
+  <div class="mt-6 md:mt-8 flex gap-4">
     <button
       routerLink="/blogs"
-      class="bg-blue-600 text-white px-6 py-3 rounded-full font-semibold hover:bg-blue-700 transition"
+      class="bg-blue-600 text-white px-4 md:px-6 py-2 md:py-3 text-sm md:text-base rounded-full font-semibold hover:bg-blue-700 transition"
     >
       Read Blogs
     </button>
@@ -141,24 +122,24 @@
 
 <!-- Services Section -->
 <section
-  class="min-h-screen bg-gray-50 py-20"
+  class="min-h-screen bg-gray-50 py-12 md:py-20 px-4"
   *ngIf="activePage === 'Services'"
 >
-  <div class="max-w-6xl mx-auto px-4">
-    <div *ngFor="let category of services" class="mb-16">
-      <h2 class="text-2xl font-bold mb-6 text-gray-900">
+  <div class="max-w-6xl mx-auto">
+    <div *ngFor="let category of services" class="mb-12 md:mb-16">
+      <h2 class="text-2xl md:text-3xl font-bold mb-6 text-gray-900">
         {{ category.title }}
       </h2>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
         <div
           *ngFor="let item of category.items"
-          class="bg-white p-6 border border-gray-200 rounded-xl hover:shadow-xl transition"
+          class="bg-white p-4 md:p-6 border border-gray-200 rounded-xl hover:shadow-xl transition"
         >
-          <h3 class="font-semibold text-lg mb-3 text-gray-900">
+          <h3 class="font-semibold text-base md:text-lg mb-3 text-gray-900">
             {{ item.name }}
           </h3>
-          <p class="text-gray-600">
+          <p class="text-gray-600 text-sm md:text-base">
             {{ item.desc }}
           </p>
         </div>
@@ -169,16 +150,16 @@
 
 <!-- About Section -->
 <section
-  class="min-h-screen flex flex-col items-center justify-center bg-gray-50 py-20 px-4"
+  class="min-h-screen flex flex-col items-center justify-center bg-gray-50 py-12 md:py-20 px-4"
   *ngIf="activePage === 'About'"
 >
   <div class="max-w-4xl w-full">
-    <h2 class="text-2xl font-bold mb-10 text-gray-900 text-center">
+    <h2 class="text-2xl md:text-3xl font-bold mb-8 md:mb-10 text-gray-900 text-center">
       Get in Touch
     </h2>
 
-    <div class="flex flex-col md:flex-row gap-10">
-      <div class="space-y-6">
+    <div class="flex flex-col lg:flex-row gap-8 md:gap-10">
+      <div class="space-y-6 flex-1">
         <div *ngFor="let item of contactInfo" class="flex items-start space-x-4">
           <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center shrink-0">
             <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -186,18 +167,18 @@
             </svg>
           </div>
 
-          <div>
-            <h3 class="font-semibold text-lg mb-1">{{ item.title }}</h3>
-            <p class="text-gray-600" [innerHTML]="item.value"></p>
+          <div class="flex-1 min-w-0">
+            <h3 class="font-semibold text-base md:text-lg mb-1">{{ item.title }}</h3>
+            <p class="text-gray-600 text-sm md:text-base break-words" [innerHTML]="item.value"></p>
           </div>
         </div>
       </div>
 
-      <div class="w-full md:w-112.5">
+      <div class="w-full lg:w-1/2">
         <iframe
           title="Simran Computers Location"
           src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d331.8294724084748!2d75.00965150909137!3d18.55086736747076!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc49fa6b9c37635%3A0x1ca8e33516a5a75b!2sH225%2B8VX%2C%20Karjat%20Alsunda%20Road%2C%20Bazar%20Peth%2C%20Karjat%2C%20Maharashtra%20414402%2C%20India!5e0!3m2!1sen!2sus!4v1767514146817!5m2!1sen!2sus"
-          class="w-full h-64 border rounded-xl"
+          class="w-full h-64 md:h-96 border rounded-xl"
           loading="lazy"
         ></iframe>
       </div>
@@ -207,18 +188,18 @@
 
 <!-- Footer -->
 <footer class="bg-gray-900 text-white">
-  <div class="max-w-7xl mx-auto px-6 py-14">
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+  <div class="max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-14">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
       <div>
-        <h3 class="font-bold text-xl mb-4">Simran Computers</h3>
-        <p class="text-gray-300 text-sm">
+        <h3 class="font-bold text-lg md:text-xl mb-4">Simran Computers</h3>
+        <p class="text-gray-300 text-xs md:text-sm">
           Your trusted partner for quality printing, copying, and document services.
         </p>
       </div>
 
       <div>
-        <h3 class="font-semibold text-lg mb-4">Quick Links</h3>
-        <ul class="space-y-2">
+        <h3 class="font-semibold text-base md:text-lg mb-4">Quick Links</h3>
+        <ul class="space-y-2 text-sm">
           <li><a href="/" class="text-gray-300 hover:text-white">Home</a></li>
           <li><a href="/services" class="text-gray-300 hover:text-white">Services</a></li>
           <li><a href="/upload" class="text-gray-300 hover:text-white">Upload</a></li>
@@ -227,14 +208,14 @@
       </div>
 
       <div>
-        <h3 class="font-semibold text-lg mb-4">Contact</h3>
-        <p class="text-gray-300">📞 +91 80878 81607</p>
-        <p class="text-gray-300">📧 info&#64;simrancomputers.com</p>
-        <p class="text-gray-300">📍 Karjat, Maharashtra</p>
+        <h3 class="font-semibold text-base md:text-lg mb-4">Contact</h3>
+        <p class="text-gray-300 text-sm">📞 +91 80878 81607</p>
+        <p class="text-gray-300 text-sm">📧 info&#64;simrancomputers.com</p>
+        <p class="text-gray-300 text-sm">📍 Karjat, Maharashtra</p>
       </div>
     </div>
 
-    <div class="border-t border-gray-800 pt-6 mt-10 text-center text-gray-400 text-sm">
+    <div class="border-t border-gray-800 pt-6 md:pt-8 mt-8 md:mt-10 text-center text-gray-400 text-xs md:text-sm">
       © 2026 Simran Computers. All rights reserved.
     </div>
   </div>

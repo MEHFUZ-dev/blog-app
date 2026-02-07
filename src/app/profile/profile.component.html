@@ -1,31 +1,31 @@
 <div class="min-h-screen bg-gray-50">
 
   <!-- Header -->
-  <div class="bg-white shadow-sm p-6 flex justify-between items-center">
+  <div class="bg-white shadow-sm p-4 md:p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
     <h2 class="text-xl font-bold">Blog Manager</h2>
 
-    <div class="flex gap-3">
+    <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
       <button
         (click)="openNewProjectModal()"
-        class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700">
+        class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 text-sm md:text-base">
         + New Blog
       </button>
 
       <button
         (click)="logout()"
-        class="bg-red-500 text-white px-4 py-2 rounded-lg">
+        class="bg-red-500 text-white px-3 md:px-4 py-2 rounded-lg text-sm md:text-base">
         Logout
       </button>
     </div>
   </div>
 
   <!-- Blog List -->
-  <div class="max-w-5xl mx-auto p-6 space-y-4">
+  <div class="max-w-5xl mx-auto p-4 md:p-6 space-y-4">
 
     <div *ngFor="let project of projects"
-         class="bg-white rounded-xl shadow-sm flex overflow-hidden">
+         class="bg-white rounded-xl shadow-sm flex flex-col sm:flex-row overflow-hidden">
 
-      <img [src]="project.image" class="w-40 h-28 object-cover">
+      <img [src]="project.image" class="w-full sm:w-40 h-48 sm:h-28 object-cover">
 
       <div class="p-4 flex-1">
         <h3 class="font-semibold">{{ project.title }}</h3>
@@ -45,33 +45,33 @@
 
   <!-- MODAL -->
   <div *ngIf="showModal"
-       class="fixed inset-0 bg-black/40 flex items-center justify-center">
+       class="fixed inset-0 bg-black/40 flex items-center justify-center p-4">
 
-    <div class="bg-white p-6 rounded-xl w-96">
+    <div class="bg-white p-6 rounded-xl w-full sm:w-96">
 
-      <h3 class="text-xl font-bold mb-4">
+      <h3 class="text-lg md:text-xl font-bold mb-4">
         {{ editingId ? 'Edit Blog' : 'Create Blog' }}
       </h3>
 
       <input
         [(ngModel)]="editProject.title"
         placeholder="Blog title"
-        class="w-full border p-2 rounded mb-3" />
+        class="w-full border p-2 rounded mb-3 text-sm" />
 
       <textarea
         [(ngModel)]="editProject.tech"
         rows="6"
         placeholder="Blog content"
-        class="w-full border p-2 rounded mb-3">
+        class="w-full border p-2 rounded mb-3 text-sm">
       </textarea>
 
-      <input type="file" (change)="onFileSelected($event)" class="mb-4"/>
+      <input type="file" (change)="onFileSelected($event)" class="mb-4 text-sm"/>
 
-      <div class="flex gap-3">
-        <button (click)="saveEdit()" class="bg-purple-600 text-white px-4 py-2 rounded">
+      <div class="flex flex-col sm:flex-row gap-3">
+        <button (click)="saveEdit()" class="bg-purple-600 text-white px-4 py-2 rounded text-sm md:text-base flex-1">
           Save
         </button>
-        <button (click)="cancelEdit()" class="bg-gray-300 px-4 py-2 rounded">
+        <button (click)="cancelEdit()" class="bg-gray-300 px-4 py-2 rounded text-sm md:text-base flex-1">
           Cancel
         </button>
       </div>

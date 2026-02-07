@@ -18,6 +18,8 @@ export class Home implements OnDestroy {
     activePage: string = 'Home'; // default
     isAuthenticated: boolean = false;
     userType: string = 'user'; // default to user
+    mobileMenuOpen = false;
+
 
 
 
@@ -30,6 +32,11 @@ export class Home implements OnDestroy {
 toggleMenu() {
   this.showMenu = !this.showMenu;
 }
+
+toggleMobileMenu() {
+  this.mobileMenuOpen = !this.mobileMenuOpen;
+}
+
 
 signIn() {
 
