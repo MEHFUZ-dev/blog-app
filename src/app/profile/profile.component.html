@@ -1,0 +1,82 @@
+<div class="min-h-screen bg-gray-50">
+
+  <!-- Header -->
+  <div class="bg-white shadow-sm p-6 flex justify-between items-center">
+    <h2 class="text-xl font-bold">Blog Manager</h2>
+
+    <div class="flex gap-3">
+      <button
+        (click)="openNewProjectModal()"
+        class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700">
+        + New Blog
+      </button>
+
+      <button
+        (click)="logout()"
+        class="bg-red-500 text-white px-4 py-2 rounded-lg">
+        Logout
+      </button>
+    </div>
+  </div>
+
+  <!-- Blog List -->
+  <div class="max-w-5xl mx-auto p-6 space-y-4">
+
+    <div *ngFor="let project of projects"
+         class="bg-white rounded-xl shadow-sm flex overflow-hidden">
+
+      <img [src]="project.image" class="w-40 h-28 object-cover">
+
+      <div class="p-4 flex-1">
+        <h3 class="font-semibold">{{ project.title }}</h3>
+        <p class="text-sm text-gray-500 line-clamp-2">
+          {{ project.tech }}
+        </p>
+      </div>
+
+      <div class="flex items-center gap-2 p-4">
+        <button (click)="startEdit(project)">✏️</button>
+        <button (click)="deleteProject(project._id!)">🗑</button>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- MODAL -->
+  <div *ngIf="showModal"
+       class="fixed inset-0 bg-black/40 flex items-center justify-center">
+
+    <div class="bg-white p-6 rounded-xl w-96">
+
+      <h3 class="text-xl font-bold mb-4">
+        {{ editingId ? 'Edit Blog' : 'Create Blog' }}
+      </h3>
+
+      <input
+        [(ngModel)]="editProject.title"
+        placeholder="Blog title"
+        class="w-full border p-2 rounded mb-3" />
+
+      <textarea
+        [(ngModel)]="editProject.tech"
+        rows="6"
+        placeholder="Blog content"
+        class="w-full border p-2 rounded mb-3">
+      </textarea>
+
+      <input type="file" (change)="onFileSelected($event)" class="mb-4"/>
+
+      <div class="flex gap-3">
+        <button (click)="saveEdit()" class="bg-purple-600 text-white px-4 py-2 rounded">
+          Save
+        </button>
+        <button (click)="cancelEdit()" class="bg-gray-300 px-4 py-2 rounded">
+          Cancel
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+</div>
