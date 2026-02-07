@@ -67,7 +67,8 @@
         class="w-full border p-2 rounded mb-3 text-sm">
       </textarea>
 
-      <input type="file" (change)="onFileSelected($event)" class="mb-4 text-sm"/>
+      <label class="block text-sm font-medium text-gray-700 mb-2">Upload Image</label>
+      <input type="file" (change)="onFileSelected($event)" class="mb-4 text-sm border rounded p-2 w-full"/>
 
       <div class="flex flex-col sm:flex-row gap-3">
         <button (click)="saveEdit()" class="bg-purple-600 text-white px-4 py-2 rounded text-sm md:text-base flex-1">
