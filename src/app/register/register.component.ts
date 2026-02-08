@@ -3,9 +3,7 @@ import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../services/auth.service';
-import { GoogleAuthService } from '../services/google-auth.service';
 import { IsLoggedService } from '../services/is-logged.service';
-import { PORTFOLIO_DATA } from '../data/portfolio-data';
 
 declare var google: any;
 
@@ -28,78 +26,63 @@ export class RegisterComponent implements OnInit, AfterViewInit {
 
   constructor(
     private auth: AuthService, 
-    private googleAuth: GoogleAuthService,
     private router: Router, 
     private isLoggedService: IsLoggedService
   ) {}
 
   ngOnInit() {
-    // Set global callback for Google response
-    (window as any).handleGoogleSignUpResponse = (response: any) => {
-      console.log('Google signup response received:', response);
+    // Set up global handler for Google response
+    (window as any).handleGoogleSignUp = (response: any) => {
+      console.log('✅ Google callback triggered', response);
       if (response.credential) {
         this.handleGoogleSignUp(response.credential);
       }
     };
-
-    // Initialize Google
-    if (google && google.accounts) {
-      google.accounts.id.initialize({
-        client_id: window.googleClientId,
-        callback: (window as any).handleGoogleSignUpResponse
-      });
-    }
   }
 
   ngAfterViewInit() {
-    // Small delay to ensure DOM is ready
     setTimeout(() => {
-      this.renderGoogleSignUp();
-    }, 50);
+      this.initializeGoogleSignUp();
+    }, 500);
   }
 
-  renderGoogleSignUp() {
-    setTimeout(() => {
-      if (google && google.accounts) {
-        // Set global callback for Google response
-        (window as any).handleGoogleSignUpResponse = (response: any) => {
-          console.log('Google signup response received:', response);
-          if (response.credential) {
-            this.handleGoogleSignUp(response.credential);
-          }
-        };
+  initializeGoogleSignUp() {
+    if (!google || !google.accounts) {
+      console.error('Google accounts library not loaded');
+      return;
+    }
 
-        // Render button
-        google.accounts.id.renderButton(
-          document.getElementById('googleSignUpButton'),
-          { 
-            theme: 'outline', 
-            size: 'large',
-            width: '100%',
-            text: 'signup_with'
-          }
-        );
+    try {
+      google.accounts.id.initialize({
+        client_id: '559516392697-19mmpvsm8u9pmli96k6fft0ceqibgann.apps.googleusercontent.com',
+        callback: (window as any).handleGoogleSignUp
+      });
 
-        // IMPORTANT: Set the callback using this method
-        google.accounts.id.initialize({
-          client_id: window.googleClientId,
-          callback: (window as any).handleGoogleSignUpResponse
-        });
-      }
-    }, 100);
+      google.accounts.id.renderButton(
+        document.getElementById('googleSignUpButton'),
+        { 
+          theme: 'outline',
+          size: 'large'
+        }
+      );
+      console.log('✅ Google Sign-Up button initialized');
+    } catch (error) {
+      console.error('❌ Error initializing Google Sign-Up:', error);
+    }
   }
 
   handleGoogleSignUp(token: string) {
-    console.log('Google token received for signup');
+    console.log('🔵 Handling Google sign up...');
     this.errorMessage = '';
     this.successMessage = '';
     this.isLoading = true;
     
-    // Verify token with backend and register
+    console.log('Sending token to backend...');
+    
     this.auth.registerWithGoogle(token).subscribe({
       next: (response) => {
+        console.log('✅ Google registration response:', response);
         this.isLoading = false;
-        console.log('Google registration response:', response);
         this.successMessage = 'Registration successful!';
         setTimeout(() => {
           this.router.navigate(['/home']);
@@ -107,14 +90,10 @@ export class RegisterComponent implements OnInit, AfterViewInit {
       },
       error: (err) => {
         this.isLoading = false;
-        console.error('Google registration error:', err);
+        console.error('❌ Google registration error:', err);
         this.errorMessage = err?.error?.message || 'Google registration failed. Please try again.';
       }
     });
-  }
-
-  prefillDefaultUser(username: string) {
-    // Method removed - no longer auto-filling default users
   }
 
   register() {

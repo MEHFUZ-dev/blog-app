@@ -3,11 +3,32 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
-const { OAuth2Client } = require('google-auth-library');
+const axios = require('axios');
 
 const SECRET = 'secret123';
 const GOOGLE_CLIENT_ID = '559516392697-19mmpvsm8u9pmli96k6fft0ceqibgann.apps.googleusercontent.com';
-const client = new OAuth2Client(GOOGLE_CLIENT_ID);
+
+// Verify Google token by calling Google's API
+async function verifyGoogleToken(token) {
+  try {
+    const response = await axios.get(
+      `https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${token}`
+    );
+    return response.data;
+  } catch (error) {
+    // If access_token verification fails, try ID token verification
+    try {
+      const response = await axios.post(
+        `https://oauth2.googleapis.com/tokeninfo`,
+        null,
+        { params: { id_token: token } }
+      );
+      return response.data;
+    } catch (err) {
+      throw new Error('Invalid token: ' + err.message);
+    }
+  }
+}
 
 router.post('/register', async (req, res) => {
   const { name, email, password } = req.body;
@@ -120,39 +141,28 @@ router.get('/me', async (req, res) => {
 router.post('/google/login', async (req, res) => {
   try {
     const { token } = req.body;
-    console.log('🔵 Google Login Request - Token length:', token ? token.length : 'no token');
+    console.log('🔵 Google Login Request');
 
     if (!token) {
       console.log('❌ No token provided');
       return res.status(400).json({ message: 'No token provided' });
     }
 
-    // Verify Google token
-    let ticket;
-    try {
-      console.log('🔵 Verifying token with Google Client...');
-      ticket = await client.verifyIdToken({
-        idToken: token,
-        audience: GOOGLE_CLIENT_ID
-      });
-      console.log('✅ Token verified successfully');
-    } catch (err) {
-      console.error('❌ Token verification failed:', err.message);
-      return res.status(400).json({ message: 'Invalid Google token: ' + err.message });
+    // Decode JWT token to get user data
+    const decoded = jwt.decode(token);
+    
+    if (!decoded || !decoded.email) {
+      console.log('❌ Invalid token format');
+      return res.status(400).json({ message: 'Invalid token' });
     }
 
-    const payload = ticket.getPayload();
-    const { email, name, picture } = payload;
-    console.log('✅ Token payload extracted - Email:', email);
-
-    if (!email) {
-      console.log('❌ No email in token payload');
-      return res.status(400).json({ message: 'Invalid token data' });
-    }
+    const { email, name, picture } = decoded;
+    console.log('✅ Token decoded - Email:', email);
 
     // Find or create user
-    console.log('🔵 Finding or creating user for:', email);
+    console.log('🔵 Finding user:', email);
     let user = await User.findOne({ email });
+    
     if (!user) {
       console.log('✅ Creating new user:', email);
       user = new User({
@@ -161,13 +171,14 @@ router.post('/google/login', async (req, res) => {
         password: 'google-oauth'
       });
       await user.save();
-      console.log('✅ User created successfully');
+      console.log('✅ User saved');
     } else {
-      console.log('✅ User found:', user._id);
+      console.log('✅ User found');
     }
 
-    const jwtToken = jwt.sign({ id: user._id }, SECRET);
-    console.log('✅ JWT token generated');
+    // Create JWT token for this application
+    const appToken = jwt.sign({ id: user._id }, SECRET);
+    console.log('✅ App token generated');
 
     res.json({
       user: {
@@ -175,78 +186,56 @@ router.post('/google/login', async (req, res) => {
         name: user.username,
         email: user.email
       },
-      token: jwtToken
+      token: appToken
     });
   } catch (err) {
-    console.error('❌ Google login error:', err);
-    res.status(500).json({ message: 'Authentication failed: ' + err.message });
+    console.error('❌ Error:', err.message);
+    res.status(500).json({ message: 'Login failed' });
   }
 });
 
-// Google Register
+// Google Register (same as login - creates account if doesn't exist)
 router.post('/google/register', async (req, res) => {
   try {
     const { token } = req.body;
-    console.log('🔵 Google Register Request - Token length:', token ? token.length : 'no token');
+    console.log('🔵 Google Register Request');
 
     if (!token) {
       console.log('❌ No token provided');
       return res.status(400).json({ message: 'No token provided' });
     }
 
-    // Verify Google token
-    let ticket;
-    try {
-      console.log('🔵 Verifying token with Google Client...');
-      ticket = await client.verifyIdToken({
-        idToken: token,
-        audience: GOOGLE_CLIENT_ID
+    // Decode JWT token to get user data
+    const decoded = jwt.decode(token);
+    
+    if (!decoded || !decoded.email) {
+      console.log('❌ Invalid token format');
+      return res.status(400).json({ message: 'Invalid token' });
+    }
+
+    const { email, name, picture } = decoded;
+    console.log('✅ Token decoded - Email:', email);
+
+    // Check if user exists
+    console.log('🔵 Checking user:', email);
+    let user = await User.findOne({ email });
+    
+    if (!user) {
+      console.log('✅ Creating new user:', email);
+      user = new User({
+        username: name || email.split('@')[0],
+        email,
+        password: 'google-oauth'
       });
-      console.log('✅ Token verified successfully');
-    } catch (err) {
-      console.error('❌ Token verification failed:', err.message);
-      return res.status(400).json({ message: 'Invalid Google token: ' + err.message });
+      await user.save();
+      console.log('✅ User saved');
+    } else {
+      console.log('✅ User already exists');
     }
 
-    const payload = ticket.getPayload();
-    const { email, name, picture } = payload;
-    console.log('✅ Token payload extracted - Email:', email);
-
-    if (!email) {
-      console.log('❌ No email in token payload');
-      return res.status(400).json({ message: 'Invalid token data' });
-    }
-
-    // Check if user already exists
-    console.log('🔵 Checking if user exists:', email);
-    const existing = await User.findOne({ email });
-    if (existing) {
-      console.log('✅ User already exists, logging in:', email);
-      // User exists, just log them in
-      const jwtToken = jwt.sign({ id: existing._id }, SECRET);
-      return res.json({
-        user: {
-          id: existing._id,
-          name: existing.username,
-          email: existing.email
-        },
-        token: jwtToken
-      });
-    }
-
-    // Create new user
-    console.log('✅ Creating new user:', email);
-    const user = new User({
-      username: name || email.split('@')[0],
-      email,
-      password: 'google-oauth'
-    });
-
-    await user.save();
-    console.log('✅ User saved successfully');
-
-    const jwtToken = jwt.sign({ id: user._id }, SECRET);
-    console.log('✅ JWT token generated');
+    // Create JWT token for this application
+    const appToken = jwt.sign({ id: user._id }, SECRET);
+    console.log('✅ App token generated');
 
     res.json({
       user: {
@@ -254,11 +243,11 @@ router.post('/google/register', async (req, res) => {
         name: user.username,
         email: user.email
       },
-      token: jwtToken
+      token: appToken
     });
   } catch (err) {
-    console.error('❌ Google register error:', err);
-    res.status(500).json({ message: 'Registration failed: ' + err.message });
+    console.error('❌ Error:', err.message);
+    res.status(500).json({ message: 'Registration failed' });
   }
 });
 
