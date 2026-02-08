@@ -61,8 +61,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
         { 
           theme: 'outline', 
           size: 'large',
-          width: '100%',
-          text: 'signin_with'
+          width: '350'
         }
       );
       console.log('Google Sign-In button rendered');
@@ -74,18 +73,22 @@ export class LoginComponent implements OnInit, AfterViewInit {
     this.errorMessage = '';
     this.isLoading = true;
     
+    console.log('Sending token to backend...');
+    
     // Verify token with backend
     this.auth.loginWithGoogle(token).subscribe({
       next: (response) => {
-        console.log('Google login response:', response);
+        console.log('✅ Google login response:', response);
         this.isLoading = false;
-        console.log('Google login successful - navigating to home');
+        console.log('Navigating to home');
         this.router.navigate(['/home']);
       },
       error: (err) => {
         this.isLoading = false;
-        console.error('Google login error:', err);
-        this.errorMessage = err?.error?.message || 'Google login failed. Please try again.';
+        console.error('❌ Google login error:', err);
+        const errorMsg = err?.error?.message || err?.message || 'Google login failed';
+        console.error('Error details:', errorMsg);
+        this.errorMessage = errorMsg;
       }
     });
   }
