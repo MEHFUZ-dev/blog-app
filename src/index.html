@@ -28,8 +28,16 @@
   
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link rel="manifest" href="manifest.json">
+  
+  <!-- Google Sign-In Script -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
   <app-root></app-root>
+  
+  <script>
+    // Google Sign-In initialization will happen in the app
+    window.googleClientId = '559516392697-mum43990jtcio03kloev4ubqgd01q37f.apps.googleusercontent.com';
+  </script>
 </body>
 </html>

@@ -139,4 +139,32 @@ export class AuthService {
     }
     return null;
   }
+
+  /**
+   * Login with Google OAuth token
+   */
+  loginWithGoogle(token: string): Observable<AuthResponse> {
+    return this.http
+      .post<AuthResponse>(`${API_BASE_URL}/auth/google/login`, { token })
+      .pipe(
+        tap((res) => {
+          localStorage.setItem('authToken', res.token);
+          this.login(res.user.name);
+        }),
+      );
+  }
+
+  /**
+   * Register with Google OAuth token
+   */
+  registerWithGoogle(token: string): Observable<AuthResponse> {
+    return this.http
+      .post<AuthResponse>(`${API_BASE_URL}/auth/google/register`, { token })
+      .pipe(
+        tap((res) => {
+          localStorage.setItem('authToken', res.token);
+          this.login(res.user.name);
+        }),
+      );
+  }
 }

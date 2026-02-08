@@ -1,10 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../services/auth.service';
+import { GoogleAuthService } from '../services/google-auth.service';
 import { IsLoggedService } from '../services/is-logged.service';
 import { PORTFOLIO_DATA } from '../data/portfolio-data';
+
+declare var google: any;
 
 @Component({
   selector: 'app-register',
@@ -12,7 +15,7 @@ import { PORTFOLIO_DATA } from '../data/portfolio-data';
   templateUrl: './register.component.html',
   styleUrl: './register.component.css'
 })
-export class RegisterComponent implements OnInit {
+export class RegisterComponent implements OnInit, AfterViewInit {
   errorMessage: string = '';
   successMessage: string = '';
   isLoading: boolean = false;
@@ -23,11 +26,61 @@ export class RegisterComponent implements OnInit {
     password: ''
   };
 
-  constructor(private auth: AuthService, private router: Router, private isLoggedService: IsLoggedService) {}
+  constructor(
+    private auth: AuthService, 
+    private googleAuth: GoogleAuthService,
+    private router: Router, 
+    private isLoggedService: IsLoggedService
+  ) {}
 
   ngOnInit() {
-    // Check if username is provided in query params to pre-fill
-    // This allows pre-filling default user data
+    this.googleAuth.initializeGoogle();
+  }
+
+  ngAfterViewInit() {
+    this.renderGoogleSignUp();
+  }
+
+  renderGoogleSignUp() {
+    setTimeout(() => {
+      if (google && google.accounts) {
+        google.accounts.id.renderButton(
+          document.getElementById('googleSignUpButton'),
+          { 
+            theme: 'outline', 
+            size: 'large',
+            width: '100%',
+            text: 'signup_with'
+          }
+        );
+
+        // Handle credential response
+        (window as any).handleGoogleSignUp = (response: any) => {
+          this.handleGoogleSignUp(response.credential);
+        };
+      }
+    }, 100);
+  }
+
+  handleGoogleSignUp(token: string) {
+    console.log('Google token received for signup:', token);
+    this.errorMessage = '';
+    this.successMessage = '';
+    
+    // Verify token with backend and register
+    this.auth.registerWithGoogle(token).subscribe({
+      next: () => {
+        console.log('Google registration successful');
+        this.successMessage = 'Registration successful!';
+        setTimeout(() => {
+          this.router.navigate(['/home']);
+        }, 1000);
+      },
+      error: (err) => {
+        console.error('Google registration error:', err);
+        this.errorMessage = err?.error?.message || 'Google registration failed';
+      }
+    });
   }
 
   prefillDefaultUser(username: string) {

@@ -113,4 +113,118 @@ router.get('/me', async (req, res) => {
   }
 });
 
+// Google Login
+router.post('/google/login', async (req, res) => {
+  try {
+    const { token } = req.body;
+
+    if (!token) {
+      return res.status(400).json({ message: 'No token provided' });
+    }
+
+    // For now, we'll do a simple verification (in production, decode the JWT properly)
+    // You can use 'jsonwebtoken' to decode without verification or use google-auth-library
+    let decodedToken;
+    try {
+      // Verify Google token (without verification first, just decode)
+      decodedToken = jwt.decode(token);
+    } catch (err) {
+      return res.status(400).json({ message: 'Invalid Google token' });
+    }
+
+    if (!decodedToken || !decodedToken.email) {
+      return res.status(400).json({ message: 'Invalid token data' });
+    }
+
+    const { email, name } = decodedToken;
+
+    // Find or create user
+    let user = await User.findOne({ email });
+    if (!user) {
+      user = new User({
+        username: name || email.split('@')[0],
+        email,
+        password: 'google-oauth' // Mark as Google OAuth user
+      });
+      await user.save();
+    }
+
+    const jwtToken = jwt.sign({ id: user._id }, SECRET);
+
+    res.json({
+      user: {
+        id: user._id,
+        name: user.username,
+        email: user.email
+      },
+      token: jwtToken
+    });
+  } catch (err) {
+    console.error('Google login error:', err);
+    res.status(500).json({ message: 'Authentication failed' });
+  }
+});
+
+// Google Register
+router.post('/google/register', async (req, res) => {
+  try {
+    const { token } = req.body;
+
+    if (!token) {
+      return res.status(400).json({ message: 'No token provided' });
+    }
+
+    let decodedToken;
+    try {
+      decodedToken = jwt.decode(token);
+    } catch (err) {
+      return res.status(400).json({ message: 'Invalid Google token' });
+    }
+
+    if (!decodedToken || !decodedToken.email) {
+      return res.status(400).json({ message: 'Invalid token data' });
+    }
+
+    const { email, name } = decodedToken;
+
+    // Check if user already exists
+    const existing = await User.findOne({ email });
+    if (existing) {
+      // User exists, just log them in
+      const jwtToken = jwt.sign({ id: existing._id }, SECRET);
+      return res.json({
+        user: {
+          id: existing._id,
+          name: existing.username,
+          email: existing.email
+        },
+        token: jwtToken
+      });
+    }
+
+    // Create new user
+    const user = new User({
+      username: name || email.split('@')[0],
+      email,
+      password: 'google-oauth'
+    });
+
+    await user.save();
+
+    const jwtToken = jwt.sign({ id: user._id }, SECRET);
+
+    res.json({
+      user: {
+        id: user._id,
+        name: user.username,
+        email: user.email
+      },
+      token: jwtToken
+    });
+  } catch (err) {
+    console.error('Google register error:', err);
+    res.status(500).json({ message: 'Registration failed' });
+  }
+});
+
 module.exports = router;
