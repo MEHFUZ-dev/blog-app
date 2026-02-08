@@ -3,8 +3,11 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const { OAuth2Client } = require('google-auth-library');
 
 const SECRET = 'secret123';
+const GOOGLE_CLIENT_ID = '559516392697-mum43990jtcio03kloev4ubqgd01q37f.apps.googleusercontent.com';
+const client = new OAuth2Client(GOOGLE_CLIENT_ID);
 
 router.post('/register', async (req, res) => {
   const { name, email, password } = req.body;
@@ -122,21 +125,24 @@ router.post('/google/login', async (req, res) => {
       return res.status(400).json({ message: 'No token provided' });
     }
 
-    // For now, we'll do a simple verification (in production, decode the JWT properly)
-    // You can use 'jsonwebtoken' to decode without verification or use google-auth-library
-    let decodedToken;
+    // Verify Google token
+    let ticket;
     try {
-      // Verify Google token (without verification first, just decode)
-      decodedToken = jwt.decode(token);
+      ticket = await client.verifyIdToken({
+        idToken: token,
+        audience: GOOGLE_CLIENT_ID
+      });
     } catch (err) {
+      console.error('Token verification failed:', err);
       return res.status(400).json({ message: 'Invalid Google token' });
     }
 
-    if (!decodedToken || !decodedToken.email) {
+    const payload = ticket.getPayload();
+    const { email, name, picture } = payload;
+
+    if (!email) {
       return res.status(400).json({ message: 'Invalid token data' });
     }
-
-    const { email, name } = decodedToken;
 
     // Find or create user
     let user = await User.findOne({ email });
@@ -174,18 +180,24 @@ router.post('/google/register', async (req, res) => {
       return res.status(400).json({ message: 'No token provided' });
     }
 
-    let decodedToken;
+    // Verify Google token
+    let ticket;
     try {
-      decodedToken = jwt.decode(token);
+      ticket = await client.verifyIdToken({
+        idToken: token,
+        audience: GOOGLE_CLIENT_ID
+      });
     } catch (err) {
+      console.error('Token verification failed:', err);
       return res.status(400).json({ message: 'Invalid Google token' });
     }
 
-    if (!decodedToken || !decodedToken.email) {
+    const payload = ticket.getPayload();
+    const { email, name, picture } = payload;
+
+    if (!email) {
       return res.status(400).json({ message: 'Invalid token data' });
     }
-
-    const { email, name } = decodedToken;
 
     // Check if user already exists
     const existing = await User.findOne({ email });

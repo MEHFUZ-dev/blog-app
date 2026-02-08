@@ -59,11 +59,11 @@
       <!-- Button -->
       <button
         type="submit"
-        [disabled]="emailRef.invalid || !password"
+        [disabled]="emailRef.invalid || !password || isLoading"
         class="w-full py-2 rounded-lg text-white font-semibold
                bg-indigo-600 hover:bg-indigo-700
                disabled:bg-gray-400 transition">
-        Login
+        {{ isLoading ? 'Logging In...' : 'Login' }}
       </button>
     </form>
 

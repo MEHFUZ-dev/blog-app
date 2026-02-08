@@ -44,32 +44,35 @@ export class RegisterComponent implements OnInit, AfterViewInit {
   renderGoogleSignUp() {
     setTimeout(() => {
       if (google && google.accounts) {
+        // Create a callback for Google Sign-Up
+        (window as any).handleGoogleSignUpClick = (response: any) => {
+          this.handleGoogleSignUp(response.credential);
+        };
+
         google.accounts.id.renderButton(
           document.getElementById('googleSignUpButton'),
           { 
             theme: 'outline', 
             size: 'large',
             width: '100%',
-            text: 'signup_with'
+            text: 'signup_with',
+            callback: (window as any).handleGoogleSignUpClick
           }
         );
-
-        // Handle credential response
-        (window as any).handleGoogleSignUp = (response: any) => {
-          this.handleGoogleSignUp(response.credential);
-        };
       }
     }, 100);
   }
 
   handleGoogleSignUp(token: string) {
-    console.log('Google token received for signup:', token);
+    console.log('Google token received for signup');
     this.errorMessage = '';
     this.successMessage = '';
+    this.isLoading = true;
     
     // Verify token with backend and register
     this.auth.registerWithGoogle(token).subscribe({
       next: () => {
+        this.isLoading = false;
         console.log('Google registration successful');
         this.successMessage = 'Registration successful!';
         setTimeout(() => {
@@ -77,8 +80,9 @@ export class RegisterComponent implements OnInit, AfterViewInit {
         }, 1000);
       },
       error: (err) => {
+        this.isLoading = false;
         console.error('Google registration error:', err);
-        this.errorMessage = err?.error?.message || 'Google registration failed';
+        this.errorMessage = err?.error?.message || 'Google registration failed. Please try again.';
       }
     });
   }

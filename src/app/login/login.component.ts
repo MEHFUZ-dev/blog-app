@@ -19,6 +19,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
   email: string = '';
   password: string = '';
   errorMessage: string = '';
+  isLoading: boolean = false;
 
   constructor(
     private auth: AuthService,
@@ -38,43 +39,42 @@ export class LoginComponent implements OnInit, AfterViewInit {
   renderGoogleSignIn() {
     setTimeout(() => {
       if (google && google.accounts) {
+        // Create a callback for Google Sign-In
+        (window as any).handleGoogleSignIn = (response: any) => {
+          this.handleGoogleLogin(response.credential);
+        };
+
+        // Render the button with the callback
         google.accounts.id.renderButton(
           document.getElementById('googleSignInButton'),
           { 
             theme: 'outline', 
             size: 'large',
             width: '100%',
-            text: 'signin_with'
+            text: 'signin_with',
+            callback: (window as any).handleGoogleSignIn
           }
         );
-
-        google.accounts.id.promptAsync((notification: any) => {
-          if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-            // Auto-prompt was not displayed
-          }
-        });
-
-        // Handle credential response
-        (window as any).handleGoogleCredential = (response: any) => {
-          this.handleGoogleLogin(response.credential);
-        };
       }
     }, 100);
   }
 
   handleGoogleLogin(token: string) {
-    console.log('Google token received:', token);
+    console.log('Google token received');
     this.errorMessage = '';
+    this.isLoading = true;
     
     // Verify token with backend
     this.auth.loginWithGoogle(token).subscribe({
       next: () => {
         console.log('Google login successful');
+        this.isLoading = false;
         this.router.navigate(['/home']);
       },
       error: (err) => {
+        this.isLoading = false;
         console.error('Google login error:', err);
-        this.errorMessage = err?.error?.message || 'Google login failed';
+        this.errorMessage = err?.error?.message || 'Google login failed. Please try again.';
       }
     });
   }
@@ -87,12 +87,15 @@ export class LoginComponent implements OnInit, AfterViewInit {
       return;
     }
 
+    this.isLoading = true;
     const email = this.email.toLowerCase().trim();
     this.auth.loginApi(email, this.password).subscribe({
       next: () => {
+        this.isLoading = false;
         this.router.navigate(['/home']);
       },
       error: (err) => {
+        this.isLoading = false;
         this.errorMessage = err?.error?.message || 'Invalid credentials';
       },
     });
