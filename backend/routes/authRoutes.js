@@ -64,6 +64,13 @@ router.post('/login', async (req, res) => {
     return res.status(400).json({ message: 'Invalid credentials' });
   }
 
+  // Check if user has a password set (Google-only accounts have empty password)
+  if (!user.password) {
+    return res.status(400).json({ 
+      message: 'This account was created with Google. Please login with Google instead.' 
+    });
+  }
+
   const valid = await bcrypt.compare(password, user.password);
   if (!valid) {
     return res.status(400).json({ message: 'Invalid credentials' });
@@ -168,9 +175,17 @@ router.post('/google/login', async (req, res) => {
       return res.status(400).json({ 
         message: 'Account not found. Please register first.' 
       });
-    } else {
-      console.log('✅ User found');
     }
+
+    // Check if account was created with email+password (has password)
+    if (user.password && user.password !== '') {
+      console.log('⚠️  Account has email+password, but trying Google login');
+      return res.status(400).json({ 
+        message: 'This account was created with email+password. Please login with email+password instead.' 
+      });
+    }
+
+    console.log('✅ User found');
 
     // Create JWT token for this application
     const appToken = jwt.sign({ id: user._id }, SECRET);
@@ -223,12 +238,12 @@ router.post('/google/register', async (req, res) => {
       });
     }
 
-    // Create new user
+    // Create new user with empty password placeholder
     console.log('✅ Creating new user:', email);
     const user = new User({
       username: name || email.split('@')[0],
       email,
-      password: 'google-oauth'
+      password: ''  // Empty password for Google-only accounts
     });
     await user.save();
     console.log('✅ User saved');

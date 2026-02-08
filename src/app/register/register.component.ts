@@ -122,7 +122,12 @@ export class RegisterComponent implements OnInit, AfterViewInit {
       },
       error: (err) => {
         this.isLoading = false;
-        this.errorMessage = err?.error?.message || 'Registration failed';
+        // Check if email already exists from Google registration
+        if (err?.error?.message?.includes('already exists')) {
+          this.errorMessage = err.error.message + '\nUse the login page with Google to access your account.';
+        } else {
+          this.errorMessage = err?.error?.message || 'Registration failed';
+        }
       },
     });
   }

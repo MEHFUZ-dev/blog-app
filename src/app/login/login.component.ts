@@ -108,7 +108,12 @@ export class LoginComponent implements OnInit, AfterViewInit {
       },
       error: (err) => {
         this.isLoading = false;
-        this.errorMessage = err?.error?.message || 'Invalid credentials';
+        // Check if it's a Google account trying email+password login
+        if (err?.error?.message?.includes('Google')) {
+          this.errorMessage = err.error.message + '\nClick "Sign with Google" button above.';
+        } else {
+          this.errorMessage = err?.error?.message || 'Invalid credentials';
+        }
       },
     });
   }
