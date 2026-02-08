@@ -1,22 +1,18 @@
 import { Component, AfterViewInit, OnInit } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
-import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../services/auth.service';
 import { IsLoggedService } from '../services/is-logged.service';
-import { PORTFOLIO_DATA } from '../data/portfolio-data';
 
 declare var google: any;
 
 @Component({
   selector: 'app-login',
-  imports: [FormsModule, RouterLink, CommonModule],
+  imports: [CommonModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
 export class LoginComponent implements OnInit, AfterViewInit {
-  email: string = '';
-  password: string = '';
   errorMessage: string = '';
   isLoading: boolean = false;
 
@@ -81,40 +77,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
       error: (err) => {
         this.isLoading = false;
         console.error('❌ Login failed:', err);
-        // Check if it's "not found" error - ask to register
-        if (err?.error?.message?.includes('not found') || err?.error?.message?.includes('register')) {
-          this.errorMessage = err.error.message + '\nGo to register page to create an account.';
-        } else {
-          this.errorMessage = err?.error?.message || 'Login failed. Please try again.';
-        }
+        this.errorMessage = err?.error?.message || 'Login failed. Please try again.';
       }
-    });
-  }
-
-  login() {
-    this.errorMessage = '';
-    
-    if (!this.email.trim()) {
-      this.errorMessage = 'Please enter email';
-      return;
-    }
-
-    // Password is optional - works for Google accounts or email-only accounts
-    if (!this.password.trim()) {
-      console.log('ℹ️ No password - trying email-only login');
-    }
-
-    this.isLoading = true;
-    const email = this.email.toLowerCase().trim();
-    this.auth.loginApi(email, this.password || '').subscribe({
-      next: () => {
-        this.isLoading = false;
-        this.router.navigate(['/home']);
-      },
-      error: (err) => {
-        this.isLoading = false;
-        this.errorMessage = err?.error?.message || 'Invalid credentials';
-      },
     });
   }
 }

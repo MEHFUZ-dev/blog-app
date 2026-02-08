@@ -144,7 +144,7 @@ router.get('/me', async (req, res) => {
   }
 });
 
-// Google Login (account must already exist)
+// Google Login (auto-create account if new user)
 router.post('/google/login', async (req, res) => {
   try {
     const { token } = req.body;
@@ -166,26 +166,22 @@ router.post('/google/login', async (req, res) => {
     const { email, name, picture } = decoded;
     console.log('✅ Token decoded - Email:', email);
 
-    // Find user - must already exist
+    // Find or create user
     console.log('🔵 Finding user:', email);
     let user = await User.findOne({ email });
     
     if (!user) {
-      console.log('❌ Account not found');
-      return res.status(400).json({ 
-        message: 'Account not found. Please register first.' 
+      console.log('✅ Creating new user:', email);
+      user = new User({
+        username: name || email.split('@')[0],
+        email,
+        password: ''  // Empty password for Google-only accounts
       });
+      await user.save();
+      console.log('✅ User created');
+    } else {
+      console.log('✅ User found');
     }
-
-    // Check if account was created with email+password (has password)
-    if (user.password && user.password !== '') {
-      console.log('⚠️  Account has email+password, but trying Google login');
-      return res.status(400).json({ 
-        message: 'This account was created with email+password. Please login with email+password instead.' 
-      });
-    }
-
-    console.log('✅ User found');
 
     // Create JWT token for this application
     const appToken = jwt.sign({ id: user._id }, SECRET);
