@@ -94,26 +94,26 @@ export class LoginComponent implements OnInit, AfterViewInit {
   login() {
     this.errorMessage = '';
     
-    if (!this.email.trim() || !this.password.trim()) {
-      this.errorMessage = 'Please enter email and password';
+    if (!this.email.trim()) {
+      this.errorMessage = 'Please enter email';
       return;
+    }
+
+    // Password is optional - works for Google accounts or email-only accounts
+    if (!this.password.trim()) {
+      console.log('ℹ️ No password - trying email-only login');
     }
 
     this.isLoading = true;
     const email = this.email.toLowerCase().trim();
-    this.auth.loginApi(email, this.password).subscribe({
+    this.auth.loginApi(email, this.password || '').subscribe({
       next: () => {
         this.isLoading = false;
         this.router.navigate(['/home']);
       },
       error: (err) => {
         this.isLoading = false;
-        // Check if it's a Google account trying email+password login
-        if (err?.error?.message?.includes('Google')) {
-          this.errorMessage = err.error.message + '\nClick "Sign with Google" button above.';
-        } else {
-          this.errorMessage = err?.error?.message || 'Invalid credentials';
-        }
+        this.errorMessage = err?.error?.message || 'Invalid credentials';
       },
     });
   }
