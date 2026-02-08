@@ -29,46 +29,57 @@ export class LoginComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit() {
-    this.googleAuth.initializeGoogle();
+    // Set global callback for Google response
+    (window as any).handleGoogleCredential = (response: any) => {
+      console.log('Google response received:', response);
+      if (response.credential) {
+        this.handleGoogleLogin(response.credential);
+      }
+    };
+
+    // Initialize Google
+    if (google && google.accounts) {
+      google.accounts.id.initialize({
+        client_id: window.googleClientId,
+        callback: (window as any).handleGoogleCredential
+      });
+    }
   }
 
   ngAfterViewInit() {
-    this.renderGoogleSignIn();
+    // Small delay to ensure DOM is ready
+    setTimeout(() => {
+      this.renderGoogleSignIn();
+    }, 50);
   }
 
   renderGoogleSignIn() {
-    setTimeout(() => {
-      if (google && google.accounts) {
-        // Create a callback for Google Sign-In
-        (window as any).handleGoogleSignIn = (response: any) => {
-          this.handleGoogleLogin(response.credential);
-        };
-
-        // Render the button with the callback
-        google.accounts.id.renderButton(
-          document.getElementById('googleSignInButton'),
-          { 
-            theme: 'outline', 
-            size: 'large',
-            width: '100%',
-            text: 'signin_with',
-            callback: (window as any).handleGoogleSignIn
-          }
-        );
-      }
-    }, 100);
+    if (google && google.accounts) {
+      // Just render the button, initialization is done in ngOnInit
+      google.accounts.id.renderButton(
+        document.getElementById('googleSignInButton'),
+        { 
+          theme: 'outline', 
+          size: 'large',
+          width: '100%',
+          text: 'signin_with'
+        }
+      );
+      console.log('Google Sign-In button rendered');
+    }
   }
 
   handleGoogleLogin(token: string) {
-    console.log('Google token received');
+    console.log('Google token received - starting login');
     this.errorMessage = '';
     this.isLoading = true;
     
     // Verify token with backend
     this.auth.loginWithGoogle(token).subscribe({
-      next: () => {
-        console.log('Google login successful');
+      next: (response) => {
+        console.log('Google login response:', response);
         this.isLoading = false;
+        console.log('Google login successful - navigating to home');
         this.router.navigate(['/home']);
       },
       error: (err) => {

@@ -34,31 +34,57 @@ export class RegisterComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit() {
-    this.googleAuth.initializeGoogle();
+    // Set global callback for Google response
+    (window as any).handleGoogleSignUpResponse = (response: any) => {
+      console.log('Google signup response received:', response);
+      if (response.credential) {
+        this.handleGoogleSignUp(response.credential);
+      }
+    };
+
+    // Initialize Google
+    if (google && google.accounts) {
+      google.accounts.id.initialize({
+        client_id: window.googleClientId,
+        callback: (window as any).handleGoogleSignUpResponse
+      });
+    }
   }
 
   ngAfterViewInit() {
-    this.renderGoogleSignUp();
+    // Small delay to ensure DOM is ready
+    setTimeout(() => {
+      this.renderGoogleSignUp();
+    }, 50);
   }
 
   renderGoogleSignUp() {
     setTimeout(() => {
       if (google && google.accounts) {
-        // Create a callback for Google Sign-Up
-        (window as any).handleGoogleSignUpClick = (response: any) => {
-          this.handleGoogleSignUp(response.credential);
+        // Set global callback for Google response
+        (window as any).handleGoogleSignUpResponse = (response: any) => {
+          console.log('Google signup response received:', response);
+          if (response.credential) {
+            this.handleGoogleSignUp(response.credential);
+          }
         };
 
+        // Render button
         google.accounts.id.renderButton(
           document.getElementById('googleSignUpButton'),
           { 
             theme: 'outline', 
             size: 'large',
             width: '100%',
-            text: 'signup_with',
-            callback: (window as any).handleGoogleSignUpClick
+            text: 'signup_with'
           }
         );
+
+        // IMPORTANT: Set the callback using this method
+        google.accounts.id.initialize({
+          client_id: window.googleClientId,
+          callback: (window as any).handleGoogleSignUpResponse
+        });
       }
     }, 100);
   }
@@ -71,9 +97,9 @@ export class RegisterComponent implements OnInit, AfterViewInit {
     
     // Verify token with backend and register
     this.auth.registerWithGoogle(token).subscribe({
-      next: () => {
+      next: (response) => {
         this.isLoading = false;
-        console.log('Google registration successful');
+        console.log('Google registration response:', response);
         this.successMessage = 'Registration successful!';
         setTimeout(() => {
           this.router.navigate(['/home']);
