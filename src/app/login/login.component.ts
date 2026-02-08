@@ -81,7 +81,12 @@ export class LoginComponent implements OnInit, AfterViewInit {
       error: (err) => {
         this.isLoading = false;
         console.error('❌ Login failed:', err);
-        this.errorMessage = err?.error?.message || 'Login failed. Please try again.';
+        // Check if it's "not found" error - ask to register
+        if (err?.error?.message?.includes('not found') || err?.error?.message?.includes('register')) {
+          this.errorMessage = err.error.message + '\nGo to register page to create an account.';
+        } else {
+          this.errorMessage = err?.error?.message || 'Login failed. Please try again.';
+        }
       }
     });
   }

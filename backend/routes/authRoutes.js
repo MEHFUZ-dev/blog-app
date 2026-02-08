@@ -137,7 +137,7 @@ router.get('/me', async (req, res) => {
   }
 });
 
-// Google Login
+// Google Login (account must already exist)
 router.post('/google/login', async (req, res) => {
   try {
     const { token } = req.body;
@@ -159,19 +159,15 @@ router.post('/google/login', async (req, res) => {
     const { email, name, picture } = decoded;
     console.log('✅ Token decoded - Email:', email);
 
-    // Find or create user
+    // Find user - must already exist
     console.log('🔵 Finding user:', email);
     let user = await User.findOne({ email });
     
     if (!user) {
-      console.log('✅ Creating new user:', email);
-      user = new User({
-        username: name || email.split('@')[0],
-        email,
-        password: 'google-oauth'
+      console.log('❌ Account not found');
+      return res.status(400).json({ 
+        message: 'Account not found. Please register first.' 
       });
-      await user.save();
-      console.log('✅ User saved');
     } else {
       console.log('✅ User found');
     }
