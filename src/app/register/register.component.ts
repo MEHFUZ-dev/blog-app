@@ -91,7 +91,12 @@ export class RegisterComponent implements OnInit, AfterViewInit {
       error: (err) => {
         this.isLoading = false;
         console.error('❌ Google registration error:', err);
-        this.errorMessage = err?.error?.message || 'Google registration failed. Please try again.';
+        // Check if it's "already exists" error
+        if (err?.error?.message?.includes('already exists')) {
+          this.errorMessage = err.error.message + '\nPlease use the login page instead.';
+        } else {
+          this.errorMessage = err?.error?.message || 'Google registration failed. Please try again.';
+        }
       }
     });
   }

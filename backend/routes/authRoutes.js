@@ -194,7 +194,7 @@ router.post('/google/login', async (req, res) => {
   }
 });
 
-// Google Register (same as login - creates account if doesn't exist)
+// Google Register (strict - must be new account)
 router.post('/google/register', async (req, res) => {
   try {
     const { token } = req.body;
@@ -216,22 +216,26 @@ router.post('/google/register', async (req, res) => {
     const { email, name, picture } = decoded;
     console.log('✅ Token decoded - Email:', email);
 
-    // Check if user exists
-    console.log('🔵 Checking user:', email);
-    let user = await User.findOne({ email });
+    // Check if user ALREADY exists
+    console.log('🔵 Checking if user already exists:', email);
+    const existing = await User.findOne({ email });
     
-    if (!user) {
-      console.log('✅ Creating new user:', email);
-      user = new User({
-        username: name || email.split('@')[0],
-        email,
-        password: 'google-oauth'
+    if (existing) {
+      console.log('❌ Account already exists');
+      return res.status(400).json({ 
+        message: 'Account already exists. Please login instead.' 
       });
-      await user.save();
-      console.log('✅ User saved');
-    } else {
-      console.log('✅ User already exists');
     }
+
+    // Create new user
+    console.log('✅ Creating new user:', email);
+    const user = new User({
+      username: name || email.split('@')[0],
+      email,
+      password: 'google-oauth'
+    });
+    await user.save();
+    console.log('✅ User saved');
 
     // Create JWT token for this application
     const appToken = jwt.sign({ id: user._id }, SECRET);
