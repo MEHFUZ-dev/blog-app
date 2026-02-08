@@ -6,7 +6,7 @@ const User = require('../models/User');
 const { OAuth2Client } = require('google-auth-library');
 
 const SECRET = 'secret123';
-const GOOGLE_CLIENT_ID = '559516392697-mum43990jtcio03kloev4ubqgd01q37f.apps.googleusercontent.com';
+const GOOGLE_CLIENT_ID = '559516392697-19mmpvsm8u9pmli96k6fft0ceqibgann.apps.googleusercontent.com';
 const client = new OAuth2Client(GOOGLE_CLIENT_ID);
 
 router.post('/register', async (req, res) => {
