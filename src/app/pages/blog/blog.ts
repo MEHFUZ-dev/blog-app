@@ -87,10 +87,10 @@ export class BlogComponent implements OnInit, OnDestroy {
       }
     });
 
-    // Check if user is authorized (only mujawarmehfuz25@gmail.com)
+    // Check if user is authorized (only ansarmujavar@gmail.com)
     this.auth.me().subscribe({
       next: (user) => {
-        this.isAuthorized = user.email === 'mujawarmehfuz25@gmail.com';
+        this.isAuthorized = user.email === 'ansarmujavar@gmail.com';
       },
       error: () => {
         this.isAuthorized = false;
@@ -171,4 +171,15 @@ export class BlogComponent implements OnInit, OnDestroy {
     this.showDetailModal = false;
     this.selectedProject = null;
   }
+
+  getCardBg(index: number) {
+  const colors = [
+
+    'bg-white',
+
+  ];
+
+  return colors[index % colors.length];
+}
+
 }

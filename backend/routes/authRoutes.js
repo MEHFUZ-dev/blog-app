@@ -118,7 +118,7 @@ router.post('/email-login', async (req, res) => {
   }
 });
 
-// Get current user profile (only for mujawarmehfuz25@gmail.com)
+// Get current user profile (only for ansarmujavar@gmail.com)
 router.get('/profile', async (req, res) => {
   try {
     const token = req.headers.authorization?.split(' ')[1];
@@ -133,8 +133,8 @@ router.get('/profile', async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Only allow access for mujawarmehfuz25@gmail.com
-    if (user.email !== 'mujawarmehfuz25@gmail.com') {
+    // Only allow access for ansarmujavar@gmail.com
+    if (user.email !== 'ansarmujavar@gmail.com') {
       return res.status(403).json({ message: 'Access denied' });
     }
 

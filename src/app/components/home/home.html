@@ -1,7 +1,7 @@
 <!-- Navbar -->
 <nav
   class="fixed top-0 left-0 w-full flex justify-between items-center px-4 md:px-8 lg:px-10 py-4 z-50 
-  bg-white/80 backdrop-blur-md shadow-lg"
+  bg-indigo backdrop-blur-md shadow-lg"
 >
   <!-- Logo -->
   <div class="text-lg md:text-xl lg:text-2xl font-bold text-gray-900">
@@ -129,7 +129,7 @@
 
 <!-- Hero Section -->
 <section
-  class="min-h-screen flex flex-col items-center justify-center text-center bg-gray-50 px-4"
+  class="min-h-screen flex flex-col items-center justify-center text-center bg-indigo-50 px-4"
   *ngIf="activePage === 'Home'"
 >
   <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight px-2">
@@ -145,7 +145,7 @@
   <div class="mt-6 md:mt-8 flex gap-4">
     <button
       routerLink="/blogs"
-      class="bg-blue-600 text-white px-4 md:px-6 py-2 md:py-3 text-sm md:text-base rounded-full font-semibold hover:bg-blue-700 transition"
+      class="bg-blue-600 text-white px-4 md:px-6 py-2 md:py-3 text-sm md:text-base rounded-full font-semibold hover:bg-blue-700 transition hover:cursor-pointer"
     >
       Read Blogs
     </button>
@@ -154,35 +154,67 @@
 
 <!-- Services Section -->
 <section
-  class="min-h-screen bg-gray-50 py-12 md:py-20 px-4"
+  class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 py-16 px-4"
   *ngIf="activePage === 'Services'"
 >
+
+
   <div class="max-w-6xl mx-auto">
-    <div *ngFor="let category of services" class="mb-12 md:mb-16">
-      <h2 class="text-2xl md:text-3xl font-bold mb-6 text-gray-900">
+
+    <!-- Page Heading -->
+    <div class="text-center mb-14">
+      <h1 class="text-3xl md:text-4xl font-bold text-gray-900">
+        Our Services
+      </h1>
+      <p class="text-gray-500 mt-2">
+        Professional solutions designed to help you grow
+      </p>
+    </div>
+
+    <div *ngFor="let category of services" class="mb-14">
+      
+      <!-- Category Title -->
+      <h2 class="text-xl md:text-2xl font-semibold mb-6 text-indigo-700 border-l-4 border-indigo-600 pl-3">
         {{ category.title }}
       </h2>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-        <div
-          *ngFor="let item of category.items"
-          class="bg-white p-4 md:p-6 border border-gray-200 rounded-xl hover:shadow-xl transition"
-        >
-          <h3 class="font-semibold text-base md:text-lg mb-3 text-gray-900">
-            {{ item.name }}
-          </h3>
-          <p class="text-gray-600 text-sm md:text-base">
-            {{ item.desc }}
-          </p>
+      <!-- Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+       <div
+  *ngFor="let item of category.items"
+  class="group p-6 rounded-2xl 
+         bg-gradient-to-br from-white to-indigo-50
+         border border-gray-200
+         shadow-sm hover:shadow-2xl hover:-translate-y-1
+         transition duration-300"
+>
+          <!-- Icon circle -->
+          <div
+            class="w-10 h-10 flex items-center justify-center 
+                   rounded-lg bg-indigo-100 text-indigo-600 
+                   font-bold mb-4 group-hover:bg-indigo-600 
+                   group-hover:text-white transition"
+          >
+            {{ item.name.charAt(0) }}
+          </div>
+
+           <h3 class="font-semibold text-lg mb-2 text-gray-900">
+    {{ item.name }}
+  </h3>
+
+            <p class="text-gray-600 text-sm leading-relaxed">
+    {{ item.desc }}
+  </p>
         </div>
       </div>
     </div>
   </div>
 </section>
 
+
 <!-- About Section -->
 <section
-  class="min-h-screen flex flex-col items-center justify-center bg-gray-50 py-12 md:py-20 px-4"
+  class="min-h-screen flex flex-col items-center justify-center bg-indigo-50 py-12 md:py-20 px-4"
   *ngIf="activePage === 'About'"
 >
   <div class="max-w-4xl w-full">
