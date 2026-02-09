@@ -52,13 +52,8 @@ toggleMobileMenu(event?: Event) {
   if (event) {
     event.preventDefault();
   }
-
-  const nav = document.getElementById('nav');
-  if (nav) {
-    nav.classList.toggle('hidden');
-  }
+  this.mobileMenuOpen = !this.mobileMenuOpen;
 }
-
 
 
 signIn() {
