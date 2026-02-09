@@ -30,7 +30,7 @@ export class Home implements OnDestroy {
   checkAdminStatus() {
     this.auth.me().subscribe({
       next: (user) => {
-        this.isAdmin = user.email === 'ansarmujavar@gmail.com';
+        this.isAdmin = user.email === 'mujawarmehfuz25@gmail.com';
       },
       error: () => {
         this.isAdmin = false;
@@ -48,10 +48,7 @@ toggleMenu() {
   this.showMenu = !this.showMenu;
 }
 
-toggleMobileMenu(event?: Event) {
-  if (event) {
-    event.preventDefault();
-  }
+toggleMobileMenu() {
   this.mobileMenuOpen = !this.mobileMenuOpen;
 }
 
