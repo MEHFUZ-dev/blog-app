@@ -76,7 +76,9 @@
       </div>
 
       <div class="flex flex-col sm:flex-row gap-3">
-        <button (click)="saveEdit()" class="bg-purple-600 text-white px-4 py-2 rounded text-sm md:text-base flex-1">
+        <button (click)="saveEdit()" 
+                [disabled]="!editProject.title || !editProject.tech || !editProject.image"
+                class="bg-purple-600 text-white px-4 py-2 rounded text-sm md:text-base flex-1 disabled:bg-gray-400 disabled:cursor-not-allowed">
           Save
         </button>
         <button (click)="cancelEdit()" class="bg-gray-300 px-4 py-2 rounded text-sm md:text-base flex-1">

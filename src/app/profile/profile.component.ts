@@ -78,8 +78,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   saveEdit() {
-    if (!this.editProject.title || !this.editProject.tech) {
-      alert('Please fill in Title and Tech Stack fields');
+    if (!this.editProject.title || !this.editProject.tech || !this.editProject.image) {
+      alert('Please fill in all fields: Title, Content, and Image');
       return;
     }
 
