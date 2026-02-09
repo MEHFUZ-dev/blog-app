@@ -19,8 +19,14 @@
 
     <!-- Error -->
     <div *ngIf="errorMessage"
-         class="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm">
-      {{ errorMessage }}
+         class="mb-6 p-4 bg-red-100 border-2 border-red-400 text-red-700 rounded-lg text-sm shadow-md">
+      <p class="font-semibold mb-2">⚠️ Error</p>
+      <p class="mb-3">{{ errorMessage }}</p>
+      <button *ngIf="errorMessage.includes('not found')"
+              (click)="goToRegister()"
+              class="w-full px-4 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 text-sm font-bold transition">
+        Go to Register
+      </button>
     </div>
 
     <!-- Email Input -->
