@@ -2,6 +2,7 @@ import { NgClass, NgFor, NgIf } from '@angular/common';
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { RouterLink, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-home',
@@ -12,6 +13,7 @@ import { Subscription } from 'rxjs';
 })
 export class Home implements OnDestroy {
   private router = inject(Router);
+  private auth = inject(AuthService);
   private subscription: Subscription | null = null;
 
     showMenu = false;
@@ -19,9 +21,23 @@ export class Home implements OnDestroy {
     isAuthenticated: boolean = false;
     userType: string = 'user'; // default to user
     mobileMenuOpen = false;
+    isAdmin: boolean = false;
 
+  constructor() {
+    this.checkAdminStatus();
+  }
 
-
+  checkAdminStatus() {
+    this.auth.me().subscribe({
+      next: (user) => {
+        const adminEmails = ['ansar@gmail.com', 'mujawarmehfuz25@gmail.com', 'mujawarmehfuz86@gmail.com'];
+        this.isAdmin = adminEmails.includes(user.email);
+      },
+      error: () => {
+        this.isAdmin = false;
+      }
+    });
+  }
 
   ngOnDestroy() {
     if (this.subscription) {
@@ -47,7 +63,11 @@ goToAdmin() {
 }
 
 signOut() {
-
+  localStorage.removeItem('authToken');
+  localStorage.removeItem('isLogged');
+  this.isAuthenticated = false;
+  this.isAdmin = false;
+  this.router.navigate(['/home']);
 }
 
 services = [

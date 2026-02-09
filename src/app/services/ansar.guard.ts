@@ -13,7 +13,8 @@ export class AnsarGuard implements CanActivate {
   canActivate(): Observable<boolean> {
     return this.auth.me().pipe(
       map((user) => {
-        if (user.email === 'ansar@gmail.com' || user.email === 'mujawarmehfuz25@gmail.com') {
+        const adminEmails = ['ansar@gmail.com', 'mujawarmehfuz25@gmail.com', 'mujawarmehfuz86@gmail.com'];
+        if (adminEmails.includes(user.email)) {
           return true;
         } else {
           this.router.navigate(['/home']);

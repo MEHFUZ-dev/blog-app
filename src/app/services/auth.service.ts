@@ -141,6 +141,20 @@ export class AuthService {
   }
 
   /**
+   * Login with email only (for admin users)
+   */
+  loginWithEmailOnly(email: string): Observable<AuthResponse> {
+    return this.http
+      .post<AuthResponse>(`${API_BASE_URL}/auth/email-login`, { email })
+      .pipe(
+        tap((res) => {
+          localStorage.setItem('authToken', res.token);
+          this.login(res.user.name);
+        }),
+      );
+  }
+
+  /**
    * Login with Google OAuth token
    */
   loginWithGoogle(token: string): Observable<AuthResponse> {

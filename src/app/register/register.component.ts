@@ -18,12 +18,6 @@ export class RegisterComponent implements OnInit, AfterViewInit {
   successMessage: string = '';
   isLoading: boolean = false;
 
-  formData = {
-    name: '',
-    email: '',
-    password: ''
-  };
-
   constructor(
     private auth: AuthService, 
     private router: Router, 
@@ -93,42 +87,11 @@ export class RegisterComponent implements OnInit, AfterViewInit {
         console.error('❌ Google registration error:', err);
         // Check if it's "already exists" error
         if (err?.error?.message?.includes('already exists')) {
-          this.errorMessage = err.error.message + '\nPlease use the login page instead.';
+          this.errorMessage = 'Account already exists. Click "Go to Login" to sign in.';
         } else {
           this.errorMessage = err?.error?.message || 'Google registration failed. Please try again.';
         }
       }
-    });
-  }
-
-  register() {
-    this.errorMessage = '';
-    this.successMessage = '';
-
-    if (!this.formData.name || !this.formData.email || !this.formData.password) {
-      this.errorMessage = 'Name, Email, and Password are required!';
-      return;
-    }
-
-    const name = this.formData.name.toLowerCase().trim();
-    const email = this.formData.email.toLowerCase().trim();
-
-    this.isLoading = true;
-    this.auth.registerApi(name, email, this.formData.password).subscribe({
-      next: () => {
-        this.isLoading = false;
-        this.successMessage = 'Registration successful!';
-        this.router.navigate(['/home']);
-      },
-      error: (err) => {
-        this.isLoading = false;
-        // Check if email already exists from Google registration
-        if (err?.error?.message?.includes('already exists')) {
-          this.errorMessage = err.error.message + '\nUse the login page with Google to access your account.';
-        } else {
-          this.errorMessage = err?.error?.message || 'Registration failed';
-        }
-      },
     });
   }
 

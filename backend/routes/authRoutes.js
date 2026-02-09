@@ -31,19 +31,17 @@ async function verifyGoogleToken(token) {
 }
 
 router.post('/register', async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email } = req.body;
 
   const existing = await User.findOne({ email });
   if (existing) {
     return res.status(400).json({ message: 'User already exists' });
   }
 
-  const hashed = await bcrypt.hash(password, 10);
-
   const user = new User({
     username: name,
     email,
-    password: hashed
+    password: '' // Empty password for passwordless registration
   });
 
   await user.save();
@@ -88,6 +86,38 @@ router.post('/login', async (req, res) => {
   });
 });
 
+// Email-only login for any registered user
+router.post('/email-login', async (req, res) => {
+  try {
+    const { email } = req.body;
+    
+    if (!email) {
+      return res.status(400).json({ message: 'Email is required' });
+    }
+
+    let user = await User.findOne({ email });
+    
+    // User must exist (must have registered first)
+    if (!user) {
+      return res.status(401).json({ message: 'User not found. Please register first.' });
+    }
+
+    const token = jwt.sign({ id: user._id }, SECRET);
+
+    res.json({
+      user: {
+        id: user._id,
+        name: user.username,
+        email: user.email
+      },
+      token
+    });
+  } catch (err) {
+    console.error('Email login error:', err);
+    res.status(500).json({ message: 'Login failed' });
+  }
+});
+
 // Get current user profile (only for ansar@gmail.com)
 router.get('/profile', async (req, res) => {
   try {
@@ -103,8 +133,8 @@ router.get('/profile', async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Only allow access for ansar@gmail.com
-    if (user.email !== 'ansar@gmail.com' || user.email !== 'mujawarmehfuz25@gmail.com') {
+    // Only allow access for admin emails
+    if (user.email !== 'ansar@gmail.com' && user.email !== 'mujawarmehfuz25@gmail.com' && user.email !== 'mujawarmehfuz86@gmail.com') {
       return res.status(403).json({ message: 'Access denied' });
     }
 
@@ -144,7 +174,7 @@ router.get('/me', async (req, res) => {
   }
 });
 
-// Google Login (auto-create account if new user)
+// Google Login - only for registered users (no auto-create)
 router.post('/google/login', async (req, res) => {
   try {
     const { token } = req.body;
@@ -166,22 +196,16 @@ router.post('/google/login', async (req, res) => {
     const { email, name, picture } = decoded;
     console.log('✅ Token decoded - Email:', email);
 
-    // Find or create user
+    // Check if user EXISTS
     console.log('🔵 Finding user:', email);
-    let user = await User.findOne({ email });
+    const user = await User.findOne({ email });
     
     if (!user) {
-      console.log('✅ Creating new user:', email);
-      user = new User({
-        username: name || email.split('@')[0],
-        email,
-        password: ''  // Empty password for Google-only accounts
-      });
-      await user.save();
-      console.log('✅ User created');
-    } else {
-      console.log('✅ User found');
+      console.log('❌ User not found - must register first');
+      return res.status(401).json({ message: 'Account not found. Please register with Google first.' });
     }
+
+    console.log('✅ User found');
 
     // Create JWT token for this application
     const appToken = jwt.sign({ id: user._id }, SECRET);

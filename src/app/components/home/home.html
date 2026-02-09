@@ -16,6 +16,7 @@
     <li><a routerLink="/blogs" class="px-3 py-2 rounded-lg hover:bg-gray-100 hover:cursor-pointer">📝 Blogs</a></li>
     <li><a (click)="activePage='Services'" class="px-3 py-2 rounded-lg hover:bg-gray-100 hover:cursor-pointer">🛠️ Services</a></li>
     <li><a (click)="activePage='About'" class="px-3 py-2 rounded-lg hover:bg-gray-100 hover:cursor-pointer">ℹ️ About</a></li>
+    <li *ngIf="isAdmin"><a routerLink="/profile" class="px-3 py-2 rounded-lg hover:bg-gray-100 hover:cursor-pointer">👤 Profile</a></li>
     <li class="relative">
   <button
     (click)="toggleMenu()"
@@ -98,6 +99,12 @@
     <li>
       <a (click)="activePage='About'; mobileMenuOpen=false" class="block">
         ℹ️ About
+      </a>
+    </li>
+
+    <li *ngIf="isAdmin">
+      <a routerLink="/profile" (click)="mobileMenuOpen=false" class="block">
+        👤 Profile
       </a>
     </li>
 

@@ -90,7 +90,8 @@ export class BlogComponent implements OnInit, OnDestroy {
     // Check if user is authorized (email = ansar@gmail.com)
     this.auth.me().subscribe({
       next: (user) => {
-        this.isAuthorized = user.email === 'ansar@gmail.com' || user.email === 'mujawarmehfuz25@gmail.com';
+        const adminEmails = ['ansar@gmail.com', 'mujawarmehfuz25@gmail.com', 'mujawarmehfuz86@gmail.com'];
+        this.isAuthorized = adminEmails.includes(user.email);
       },
       error: () => {
         this.isAuthorized = false;

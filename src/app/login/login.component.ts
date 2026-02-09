@@ -1,5 +1,6 @@
 import { Component, AfterViewInit, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../services/auth.service';
 import { IsLoggedService } from '../services/is-logged.service';
@@ -8,11 +9,12 @@ declare var google: any;
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule],
+  imports: [FormsModule, CommonModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
 export class LoginComponent implements OnInit, AfterViewInit {
+  email: string = '';
   errorMessage: string = '';
   isLoading: boolean = false;
 
@@ -77,9 +79,41 @@ export class LoginComponent implements OnInit, AfterViewInit {
       error: (err) => {
         this.isLoading = false;
         console.error('❌ Login failed:', err);
-        this.errorMessage = err?.error?.message || 'Login failed. Please try again.';
+        this.errorMessage = err?.error?.message || 'Please register with Google first.';
       }
     });
+  }
+
+  login() {
+    this.errorMessage = '';
+    
+    if (!this.email.trim()) {
+      this.errorMessage = 'Please enter email';
+      return;
+    }
+
+    this.isLoading = true;
+    const email = this.email.toLowerCase().trim();
+    
+    this.auth.loginWithEmailOnly(email).subscribe({
+      next: () => {
+        this.isLoading = false;
+        this.router.navigate(['/home']);
+      },
+      error: (err) => {
+        this.isLoading = false;
+        // Check if user not found
+        if (err?.error?.message?.includes('not found')) {
+          this.errorMessage = 'Account not found. Please register first.';
+        } else {
+          this.errorMessage = err?.error?.message || 'Login failed';
+        }
+      },
+    });
+  }
+
+  goToRegister() {
+    this.router.navigate(['/register']);
   }
 }
 
