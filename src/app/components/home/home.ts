@@ -52,8 +52,13 @@ toggleMobileMenu(event?: Event) {
   if (event) {
     event.preventDefault();
   }
-  this.mobileMenuOpen = !this.mobileMenuOpen;
+
+  const nav = document.getElementById('nav');
+  if (nav) {
+    nav.classList.toggle('hidden');
+  }
 }
+
 
 
 signIn() {
