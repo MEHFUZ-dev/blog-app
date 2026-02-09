@@ -1,5 +1,13 @@
 <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 px-4">
 
+  <!-- Loading Overlay -->
+  <div *ngIf="isLoading" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-8 shadow-2xl flex flex-col items-center">
+      <div class="w-12 h-12 border-4 border-green-200 border-t-green-600 rounded-full animate-spin mb-4"></div>
+      <p class="text-gray-700 font-semibold">Creating account...</p>
+    </div>
+  </div>
+
   <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl p-8">
 
     <!-- Header -->
