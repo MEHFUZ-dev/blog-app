@@ -62,8 +62,9 @@
 
     <!-- Hamburger (shows only under 768px) -->
     <button
+  type="button"
   class="md:hidden flex flex-col gap-1"
-  (click)="toggleMobileMenu()"
+  (click)="toggleMobileMenu($event)"
 >
 
       <span class="w-6 h-0.5 bg-gray-900"></span>

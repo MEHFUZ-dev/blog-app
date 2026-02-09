@@ -48,7 +48,10 @@ toggleMenu() {
   this.showMenu = !this.showMenu;
 }
 
-toggleMobileMenu() {
+toggleMobileMenu(event?: Event) {
+  if (event) {
+    event.preventDefault();
+  }
   this.mobileMenuOpen = !this.mobileMenuOpen;
 }
 
