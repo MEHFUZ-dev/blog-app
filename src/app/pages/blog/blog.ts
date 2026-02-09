@@ -87,11 +87,10 @@ export class BlogComponent implements OnInit, OnDestroy {
       }
     });
 
-    // Check if user is authorized (email = ansar@gmail.com)
+    // Check if user is authorized (only mujawarmehfuz25@gmail.com)
     this.auth.me().subscribe({
       next: (user) => {
-        const adminEmails = ['ansar@gmail.com', 'mujawarmehfuz25@gmail.com', 'mujawarmehfuz86@gmail.com'];
-        this.isAuthorized = adminEmails.includes(user.email);
+        this.isAuthorized = user.email === 'mujawarmehfuz25@gmail.com';
       },
       error: () => {
         this.isAuthorized = false;

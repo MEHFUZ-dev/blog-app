@@ -83,6 +83,18 @@ export class ProfileComponent implements OnInit, OnDestroy {
       return;
     }
 
+    // Check image size if image is present
+    if (this.editProject.image && this.editProject.image.startsWith('data:')) {
+      // Calculate base64 size in bytes
+      const base64Size = (this.editProject.image.length * 3) / 4;
+      const maxSize = 5 * 1024 * 1024; // 5MB
+      
+      if (base64Size > maxSize) {
+        alert('Image is too large. Please choose a smaller image (max 5MB).');
+        return;
+      }
+    }
+
     // Verify user still has valid token
     const token = localStorage.getItem('authToken');
     if (!token) {
@@ -122,6 +134,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
     const maxSize = 5 * 1024 * 1024; // 5MB
     if (file.size > maxSize) {
       alert('Image size is too large. Please choose an image smaller than 5MB.');
+      // Clear only the file input, not the entire form
+      event.target.value = '';
       return;
     }
 
