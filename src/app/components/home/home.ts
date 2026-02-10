@@ -11,7 +11,7 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
-export class Home implements OnDestroy {
+export class Home implements OnInit, OnDestroy {
   private router = inject(Router);
   private auth = inject(AuthService);
   private subscription: Subscription | null = null;
@@ -24,7 +24,20 @@ export class Home implements OnDestroy {
     isAdmin: boolean = false;
 
   constructor() {
-    this.checkAdminStatus();
+    this.checkAuthenticationStatus();
+  }
+
+  ngOnInit() {
+    this.checkAuthenticationStatus();
+  }
+
+  checkAuthenticationStatus() {
+    const token = localStorage.getItem('authToken');
+    this.isAuthenticated = !!token;
+    
+    if (this.isAuthenticated) {
+      this.checkAdminStatus();
+    }
   }
 
   checkAdminStatus() {
