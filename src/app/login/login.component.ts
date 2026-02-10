@@ -56,7 +56,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
         document.getElementById('googleSignInButton'),
         { 
           theme: 'outline',
-          size: 'large'
+          size: 'large',
         }
       );
       console.log('✅ Google Sign-In button initialized');

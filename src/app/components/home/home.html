@@ -21,7 +21,7 @@
     <li class="relative">
   <button
     (click)="toggleMenu()"
-    class="px-3 py-2 rounded-lg hover:bg-gray-100"
+    class="px-3 py-2 rounded-lg hover:bg-gray-100 hover:cursor-pointer"
   >
     📞 Contact
   </button>
@@ -56,7 +56,7 @@
     <button
       routerLink="/login"
       *ngIf="!isAuthenticated"
-      class="bg-blue-600 text-white px-3 md:px-5 py-2 text-sm md:text-base rounded-full font-medium"
+      class="bg-blue-600 text-white px-3 md:px-5 py-2 text-sm md:text-base rounded-full font-medium hover:bg-blue-700 hover:cursor-pointer"
     >
       Sign In
     </button>
@@ -77,8 +77,8 @@
 </nav>
 
 <!-- Mobile Menu -->
-<div *ngIf="mobileMenuOpen" class="md:hidden bg-white border-t shadow-lg">
-  <ul class="flex flex-col px-4 py-4 gap-3 font-medium mt-14">
+<div id="mobile" *ngIf="mobileMenuOpen" class="md:hidden bg-white border-t shadow-lg">
+  <ul class="flex flex-col px-4 py-4 gap-3 font-medium mt-14 bg-indigo-50">
 
     <li>
       <a (click)="activePage='Home'; mobileMenuOpen=false" class="block">
@@ -131,8 +131,8 @@
 
 <!-- Hero Section -->
 <section
-id="hero"
-  class="min-h-screen flex flex-col items-center justify-center text-center bg-indigo-50 px-4"
+
+  class="pt-20 min-h-screen flex flex-col items-center justify-center text-center bg-indigo-50 px-4"
   *ngIf="activePage === 'Home'"
 >
   <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight px-2">
@@ -157,7 +157,8 @@ id="hero"
 
 <!-- Services Section -->
 <section
-  class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 py-16 px-4"
+
+  class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 py-16 px-4 mt-10"
   *ngIf="activePage === 'Services'"
 >
 
@@ -267,10 +268,10 @@ id="hero"
       <div>
         <h3 class="font-semibold text-base md:text-lg mb-4">Quick Links</h3>
         <ul class="space-y-2 text-sm">
-          <li><a href="/" class="text-gray-300 hover:text-white">Home</a></li>
-          <li><a href="/services" class="text-gray-300 hover:text-white">Services</a></li>
-          <li><a href="/upload" class="text-gray-300 hover:text-white">Upload</a></li>
-          <li><a href="/contact" class="text-gray-300 hover:text-white">Contact</a></li>
+          <li><a href="/" class="text-gray-300 hover:text-white hover:cursor-pointer">Home</a></li>
+          <li><a (click)="services1()" class="text-gray-300 hover:text-white hover:cursor-pointer">Services</a></li>
+          <li><a (click)="about()" class="text-gray-300 hover:text-white hover:cursor-pointer">About</a></li>
+
         </ul>
       </div>
 

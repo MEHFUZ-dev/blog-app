@@ -50,6 +50,7 @@ toggleMenu() {
 
 toggleMobileMenu() {
   this.mobileMenuOpen = !this.mobileMenuOpen;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 
@@ -151,6 +152,16 @@ contactInfo = [
     icon: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z'
   }
 ];
+
+services1() {
+  this.activePage = 'Services';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+about() {
+  this.activePage = 'About';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
 
 
