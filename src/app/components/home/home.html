@@ -1,7 +1,6 @@
 <!-- Navbar -->
- 
 <nav
-id="nav"
+
   class="fixed top-0 left-0 w-full flex justify-between items-center px-4 md:px-8 lg:px-10 py-4 z-50 
   bg-indigo backdrop-blur-md shadow-lg"
 >
@@ -66,7 +65,7 @@ id="nav"
     <button
   type="button"
   class="md:hidden flex flex-col gap-1"
-  (click)="toggleMobileMenu($event)"
+  (click)="toggleMobileMenu()"
 >
 
       <span class="w-6 h-0.5 bg-gray-900"></span>
@@ -81,7 +80,7 @@ id="nav"
 <div *ngIf="mobileMenuOpen" class="md:hidden bg-white border-t shadow-lg">
   <ul class="flex flex-col px-4 py-4 gap-3 font-medium mt-14">
 
-    <li id="nav">
+    <li>
       <a (click)="activePage='Home'; mobileMenuOpen=false" class="block">
         🏠 Home
       </a>
@@ -132,6 +131,7 @@ id="nav"
 
 <!-- Hero Section -->
 <section
+id="hero"
   class="min-h-screen flex flex-col items-center justify-center text-center bg-indigo-50 px-4"
   *ngIf="activePage === 'Home'"
 >

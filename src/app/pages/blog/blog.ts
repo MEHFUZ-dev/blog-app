@@ -175,7 +175,7 @@ export class BlogComponent implements OnInit, OnDestroy {
   getCardBg(index: number) {
   const colors = [
 
-    'bg-white',
+    'bg-white/4',
 
   ];
 

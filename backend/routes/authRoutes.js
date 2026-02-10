@@ -134,7 +134,7 @@ router.get('/profile', async (req, res) => {
     }
 
     // Only allow access for ansarmujavar@gmail.com
-    if (user.email !== 'ansarmujavar@gmail.com') {
+    if (user.email !== 'ansarmujavar@gmail.com' || user.email !== 'mujawarmehfuz25@gmail.com') {
       return res.status(403).json({ message: 'Access denied' });
     }
 
