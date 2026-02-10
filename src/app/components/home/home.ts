@@ -1,4 +1,4 @@
-import { NgFor, NgIf } from '@angular/common';
+import { NgClass, NgFor, NgIf } from '@angular/common';
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { RouterLink, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -6,40 +6,25 @@ import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-home',
-  imports: [RouterLink, NgIf, NgFor],
+  imports: [RouterLink, NgIf, NgClass, NgFor],
   standalone: true,
   templateUrl: './home.html',
-  styleUrl: './home.css'
+  styleUrl: './home.css',
 })
-export class Home implements OnInit, OnDestroy {
+export class Home implements OnDestroy {
   private router = inject(Router);
   private auth = inject(AuthService);
   private subscription: Subscription | null = null;
 
     showMenu = false;
-    activePage: string = 'Home';
+    activePage: string = 'Home'; // default
     isAuthenticated: boolean = false;
-    userType: string = 'user';
+    userType: string = 'user'; // default to user
     mobileMenuOpen = false;
     isAdmin: boolean = false;
 
   constructor() {
-    this.checkAuthenticationStatus();
-  }
-
-  ngOnInit() {
-    this.checkAuthenticationStatus();
-  }
-
-  checkAuthenticationStatus() {
-    const token = localStorage.getItem('authToken');
-    this.isAuthenticated = !!token;
-    
-    if (this.isAuthenticated) {
-      this.checkAdminStatus();
-    } else {
-      this.isAdmin = false;
-    }
+    this.checkAdminStatus();
   }
 
   checkAdminStatus() {
