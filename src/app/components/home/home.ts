@@ -1,5 +1,5 @@
 import { NgFor, NgIf } from '@angular/common';
-import { Component, inject, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { RouterLink, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
@@ -17,9 +17,9 @@ export class Home implements OnInit, OnDestroy {
   private subscription: Subscription | null = null;
 
     showMenu = false;
-    activePage: string = 'Home'; // default
+    activePage: string = 'Home';
     isAuthenticated: boolean = false;
-    userType: string = 'user'; // default to user
+    userType: string = 'user';
     mobileMenuOpen = false;
     isAdmin: boolean = false;
 
@@ -29,26 +29,11 @@ export class Home implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.checkAuthenticationStatus();
-    // Also check authentication status periodically
-    this.subscription = new Subscription();
-  }
-
-  refreshAuthStatus() {
-    this.checkAuthenticationStatus();
-  }
-
-  clearAuth() {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('isLogged');
-    this.isAuthenticated = false;
-    this.isAdmin = false;
-    console.log('Auth cleared manually');
   }
 
   checkAuthenticationStatus() {
     const token = localStorage.getItem('authToken');
     this.isAuthenticated = !!token;
-    console.log('Auth status check:', { token: !!token, isAuthenticated: this.isAuthenticated });
     
     if (this.isAuthenticated) {
       this.checkAdminStatus();
