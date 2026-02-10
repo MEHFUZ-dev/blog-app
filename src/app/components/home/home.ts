@@ -1,4 +1,4 @@
-import { NgClass, NgFor, NgIf } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { RouterLink, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -6,7 +6,7 @@ import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-home',
-  imports: [RouterLink, NgIf, NgClass, NgFor],
+  imports: [RouterLink, NgIf, NgFor],
   standalone: true,
   templateUrl: './home.html',
   styleUrl: './home.css',
@@ -29,14 +29,23 @@ export class Home implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.checkAuthenticationStatus();
+    // Also check authentication status periodically
+    this.subscription = new Subscription();
+  }
+
+  refreshAuthStatus() {
+    this.checkAuthenticationStatus();
   }
 
   checkAuthenticationStatus() {
     const token = localStorage.getItem('authToken');
     this.isAuthenticated = !!token;
+    console.log('Auth status check:', { token: !!token, isAuthenticated: this.isAuthenticated });
     
     if (this.isAuthenticated) {
       this.checkAdminStatus();
+    } else {
+      this.isAdmin = false;
     }
   }
 
