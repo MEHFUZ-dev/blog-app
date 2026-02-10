@@ -56,6 +56,15 @@
     <div class="text-xs text-gray-500">
       Auth: {{isAuthenticated}}, Admin: {{isAdmin}}
     </div>
+    
+    <!-- Manual clear button - remove later -->
+    <button 
+      *ngIf="isAuthenticated"
+      (click)="clearAuth()"
+      class="text-xs text-red-500 underline"
+    >
+      Clear Auth
+    </button>
 
     <button
       routerLink="/login"

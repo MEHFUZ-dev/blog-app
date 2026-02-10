@@ -1,5 +1,5 @@
 import { NgFor, NgIf } from '@angular/common';
-import { Component, inject, OnInit, OnDestroy } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
@@ -9,7 +9,7 @@ import { AuthService } from '../../services/auth.service';
   imports: [RouterLink, NgIf, NgFor],
   standalone: true,
   templateUrl: './home.html',
-  styleUrl: './home.css',
+  styleUrl: './home.css'
 })
 export class Home implements OnInit, OnDestroy {
   private router = inject(Router);
@@ -35,6 +35,14 @@ export class Home implements OnInit, OnDestroy {
 
   refreshAuthStatus() {
     this.checkAuthenticationStatus();
+  }
+
+  clearAuth() {
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('isLogged');
+    this.isAuthenticated = false;
+    this.isAdmin = false;
+    console.log('Auth cleared manually');
   }
 
   checkAuthenticationStatus() {
