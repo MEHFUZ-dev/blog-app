@@ -43,6 +43,7 @@ export class BlogComponent implements OnInit, OnDestroy {
   displayCards: CardItem[] = [];
   recentBlog: CardItem | null = null;
   isAuthorized: boolean = false;
+  isLoading: boolean = true;
 
   categories: string[] = ['Website', 'Template', 'News'];
   selectedCategory: string = 'Website';
@@ -64,6 +65,8 @@ export class BlogComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.isLoading = true;
+    
     // Load data without requiring login
     // Load projects and articles for public viewing
     this.subscription = this.projectsService.projects$.subscribe(projects => {
@@ -84,6 +87,11 @@ export class BlogComponent implements OnInit, OnDestroy {
         if (this.displayCards.length > 0) {
           this.recentBlog = this.displayCards[0];
         }
+      }
+      
+      // Stop loading if we have projects
+      if (this.projects.length > 0) {
+        this.isLoading = false;
       }
     });
 
@@ -147,9 +155,13 @@ export class BlogComponent implements OnInit, OnDestroy {
           // Update recent blog to the first article
           this.recentBlog = mapped[0];
         }
+        
+        // Stop loading when articles are loaded
+        this.isLoading = false;
       },
       error: () => {
         // fallback: keep current displayCards (usually from projects)
+        this.isLoading = false;
       },
     });
   }
