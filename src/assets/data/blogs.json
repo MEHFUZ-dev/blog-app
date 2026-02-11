@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "title": "Complete Guide to Printing Services",
+    "tech": "Professional printing solutions for all your business needs. We offer black & white printing, color printing, bulk copying, document binding, and lamination services in Karjat.",
+    "image": "https://images.unsplash.com/photo-1563013544-657b5f1b8d9c?w=800",
+    "category": "Printing"
+  },
+  {
+    "id": 2,
+    "title": "Legal Documentation Services",
+    "tech": "Expert legal documentation assistance including court forms, affidavit preparation, legal typing, and notary services. Professional help with all your legal document needs.",
+    "image": "https://images.unsplash.com/photo-1589829089941-6583f17c4cc3?w=800",
+    "category": "Legal"
+  },
+  {
+    "id": 3,
+    "title": "Digital Services & Solutions",
+    "tech": "Modern digital services including document scanning, PDF conversion, OCR services, and email solutions. Transform your documents into digital format.",
+    "image": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800",
+    "category": "Digital"
+  }
+]

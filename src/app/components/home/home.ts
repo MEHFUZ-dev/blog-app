@@ -24,7 +24,13 @@ export class Home implements OnDestroy {
     isAdmin: boolean = false;
 
   constructor() {
+    this.checkAuthenticationStatus();
     this.checkAdminStatus();
+  }
+
+  checkAuthenticationStatus() {
+    const token = localStorage.getItem('authToken');
+    this.isAuthenticated = !!token;
   }
 
   checkAdminStatus() {
